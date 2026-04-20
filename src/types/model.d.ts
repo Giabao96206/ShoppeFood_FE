@@ -12,4 +12,16 @@ declare global {
     _id: string;
     status?: string;
   }
+
+  interface UserLogin {
+    user: {
+      _id: string;
+      name: string;
+      email: string;
+      avatar: string;
+      phone?: string;
+      role?: string;
+    };
+    access_token: string;
+  }
 }

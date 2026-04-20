@@ -45,7 +45,7 @@ export default function SingUp() {
   ) => {
     try {
       const res = await register(name, email, password);
-
+      console.log(name, email, password, res);
       if (res.data) {
         router.replace({
           pathname: "/(auth)/verify",

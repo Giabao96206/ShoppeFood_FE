@@ -16,11 +16,12 @@ const styles = StyleSheet.create({
   blueBox: {
     marginHorizontal: 2,
     backgroundColor: APP_COLOR.GRAY,
-    padding: 10,
+    padding: 8,
     borderRadius: 8,
     flexDirection: "row",
     alignItems: "center",
     gap: 5,
+    margin: 4,
   },
 });
 

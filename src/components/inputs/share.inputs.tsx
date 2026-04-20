@@ -38,7 +38,7 @@ interface Iprops {
   title?: string;
   keyBoardType?: KeyboardTypeOptions;
   secureTextEntry?: boolean;
-  value: string;
+  value: string | undefined;
   setValue?: (value: any) => void;
   valueHold?: string;
   onChangeText?: any;

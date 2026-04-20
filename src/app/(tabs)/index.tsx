@@ -31,13 +31,15 @@ const Home = () => {
         {showLoading ? (
           <ShopeeFoodLoading onFinish={handleLocationDone} />
         ) : (
-          <CusTomFlashList
-            data={data}
-            TopListElementComponent={<TopListHome />}
-            HeaderComponent={<HeaderComponent address={address} />}
-            StickyElementComponent={<SearchHome />}
-            renderItem={(item) => <CollectionHome name={item.name} />}
-          />
+          <>
+            <CusTomFlashList
+              data={data}
+              TopListElementComponent={<TopListHome />}
+              HeaderComponent={<HeaderComponent address={address} />}
+              StickyElementComponent={<SearchHome />}
+              renderItem={(item) => <CollectionHome name={item.name} />}
+            />
+          </>
         )}
       </View>
     </>
