@@ -20,43 +20,43 @@ export default function RootLayout() {
     <RootSiblingParent>
       <ThemeProvider value={navTheme}>
         <AppProvider>
-          <SafeAreaView style={{ flex: 1 }}>
-            <Stack>
-              <Stack.Screen name="index" options={{ headerShown: false }} />
-              <Stack.Screen
-                name="(auth)/SignUp"
-                options={{ headerShown: false }}
-              />
-              <Stack.Screen
-                name="(auth)/login"
-                options={{ headerShown: false }}
-              />
-              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-              <Stack.Screen
-                name="(auth)/verify"
-                options={{ headerShown: false }}
-              />
-              <Stack.Screen
-                name="(auth)/welcome"
-                options={{ headerShown: false }}
-              />
-              <Stack.Screen
-                name="(user)/Home"
-                options={{
-                  title: "Trang chu",
-                }}
-              />
-              <Stack.Screen
-                name="(user)/Home_Detail"
-                options={{ title: "Detail" }}
-              />
-              <Stack.Screen
-                name="(user)/LoginDetail"
-                options={{ title: "Login_Detail" }}
-              />
-            </Stack>
-            <StatusBar style="auto" />
-          </SafeAreaView>
+          {/* <SafeAreaView style={{ flex: 1 }}> */}
+          <Stack>
+            <Stack.Screen name="index" options={{ headerShown: false }} />
+            <Stack.Screen
+              name="(auth)/SignUp"
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="(auth)/login"
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen
+              name="(auth)/verify"
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="(auth)/welcome"
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="(user)/Home"
+              options={{
+                title: "Trang chu",
+              }}
+            />
+            <Stack.Screen
+              name="(user)/Home_Detail"
+              options={{ title: "Detail" }}
+            />
+            <Stack.Screen
+              name="(user)/LoginDetail"
+              options={{ title: "Login_Detail" }}
+            />
+          </Stack>
+          <StatusBar style="auto" />
+          {/* </SafeAreaView> */}
         </AppProvider>
       </ThemeProvider>
     </RootSiblingParent>

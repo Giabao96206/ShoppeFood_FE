@@ -6,10 +6,12 @@ import SearchHome from "@/src/components/home/search.home";
 import TopListHome from "@/src/components/home/top.list.home";
 import React, { useState } from "react";
 import { View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 interface IData {
   key: number;
   name: string;
+  description: string;
   ref: string;
 }
 const Home = () => {
@@ -21,12 +23,27 @@ const Home = () => {
     setShowLoading(false);
   };
   const data: IData[] = [
-    { key: 1, name: "Top Quán Rating 5* tuần này", ref: "" },
-    { key: 2, name: "Quán Mới Lên Sàn", ref: "" },
-    { key: 3, name: "Ăn Thỏa Thích, Freeship 0Đ", ref: "" },
+    {
+      key: 1,
+      name: "Top Quán Rating 5* tuần này",
+      description: "Gợi ý Quán Rating 5* tuần này",
+      ref: "",
+    },
+    {
+      key: 2,
+      name: "Quán Mới Lên Sàn",
+      description: "Đề cử quán Mới Lên Sàn",
+      ref: "",
+    },
+    {
+      key: 3,
+      name: "Ăn Thỏa Thích, Freeship 0Đ",
+      description: "Ăn Thỏa Thích, Freeship 0Đ",
+      ref: "",
+    },
   ];
   return (
-    <>
+    <SafeAreaView style={{ flex: 1 }}>
       <View>
         {showLoading ? (
           <ShopeeFoodLoading onFinish={handleLocationDone} />
@@ -37,12 +54,17 @@ const Home = () => {
               TopListElementComponent={<TopListHome />}
               HeaderComponent={<HeaderComponent address={address} />}
               StickyElementComponent={<SearchHome />}
-              renderItem={(item) => <CollectionHome name={item.name} />}
+              renderItem={(item) => (
+                <CollectionHome
+                  name={item.name}
+                  description={item.description}
+                />
+              )}
             />
           </>
         )}
       </View>
-    </>
+    </SafeAreaView>
   );
 };
 
