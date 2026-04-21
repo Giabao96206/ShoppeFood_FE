@@ -12,7 +12,7 @@ interface IData {
   key: number;
   name: string;
   description: string;
-  ref: string;
+  refAPI: string;
 }
 const Home = () => {
   const [showLoading, setShowLoading] = useState<boolean>(true);
@@ -27,19 +27,19 @@ const Home = () => {
       key: 1,
       name: "Top Quán Rating 5* tuần này",
       description: "Gợi ý Quán Rating 5* tuần này",
-      ref: "",
+      refAPI: "topRating",
     },
     {
       key: 2,
       name: "Quán Mới Lên Sàn",
       description: "Đề cử quán Mới Lên Sàn",
-      ref: "",
+      refAPI: "topRating",
     },
     {
       key: 3,
       name: "Ăn Thỏa Thích, Freeship 0Đ",
       description: "Ăn Thỏa Thích, Freeship 0Đ",
-      ref: "",
+      refAPI: "topRating",
     },
   ];
   return (
@@ -58,6 +58,7 @@ const Home = () => {
                 <CollectionHome
                   name={item.name}
                   description={item.description}
+                  refAPI={item.refAPI}
                 />
               )}
             />

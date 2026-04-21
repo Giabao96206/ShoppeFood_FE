@@ -1,42 +1,43 @@
-import demo from "@/src/assets/images/demo.jpg";
 import { APP_COLOR } from "@/src/utils/APP_COLOR";
-import { Image } from "expo-image";
-import { FlatList, StyleSheet, Text, View } from "react-native";
+import { GetTopRestaurant } from "@/src/utils/service";
+import { useEffect, useState } from "react";
+import { StyleSheet, Text, View } from "react-native";
+import Animated, {
+  useAnimatedScrollHandler,
+  useSharedValue,
+} from "react-native-reanimated";
+import RestaurantItem from "./Hooks/RestaurantItem";
 
 interface IProps {
   name: string;
   description: string;
+  refAPI: string;
 }
 
 export default function CollectionHome(props: IProps) {
-  const { name, description } = props;
-  const data = [
-    {
-      key: 1,
-      image: demo,
-      name: "Cửa hàng 1",
+  const scrollX = useSharedValue(0);
+
+  const onScroll = useAnimatedScrollHandler({
+    onScroll: (event) => {
+      scrollX.value = event.contentOffset.x;
     },
-    {
-      key: 2,
-      image: demo,
-      name: "Cửa hàng 1",
-    },
-    {
-      key: 3,
-      image: demo,
-      name: "Cửa hàng 1",
-    },
-    {
-      key: 4,
-      image: demo,
-      name: "Cửa hàng 1",
-    },
-    {
-      key: 5,
-      image: demo,
-      name: "Cửa hàng 1",
-    },
-  ];
+  });
+  const { name, description, refAPI } = props;
+  const [restaurant, setRestaurant] = useState<IRestaurant[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const res = await GetTopRestaurant(refAPI);
+
+      if (res.data) {
+        setRestaurant(res.data);
+      } else {
+        console.log(res.message);
+      }
+    };
+    fetchData();
+  }, [refAPI]);
+  const baseImg = `${process.env.EXPO_PUBLIC_API_URL}/images/restaurant`;
   return (
     <>
       <View style={{ height: 10, backgroundColor: "#e9e9e9" }}> </View>
@@ -56,25 +57,22 @@ export default function CollectionHome(props: IProps) {
         <View style={{ marginVertical: 5 }}>
           <Text style={{ color: "#5a5a5a" }}>{description}</Text>
         </View>
-        <FlatList
-          data={data}
+        <Animated.FlatList
+          data={restaurant}
           horizontal
+          onScroll={onScroll}
+          scrollEventThrottle={16}
           contentContainerStyle={{ gap: 5 }}
           showsHorizontalScrollIndicator={false}
-          showsVerticalScrollIndicator={false}
-          renderItem={({ item }) => {
-            return (
-              <View style={{ backgroundColor: "#efefef" }}>
-                <Image style={{ height: 130, width: 130 }} source={demo} />
-                <View style={{ padding: 5 }}>
-                  <Text style={{ fontWeight: "bold" }}>{item.name}</Text>
-                  <View style={styles.sale}>
-                    <Text style={{ color: APP_COLOR.ORANGE }}>Flash Sale</Text>
-                  </View>
-                </View>
-              </View>
-            );
-          }}
+          renderItem={({ item, index }) => (
+            <RestaurantItem
+              item={item}
+              index={index}
+              scrollX={scrollX}
+              baseImg={baseImg}
+            />
+          )}
+          keyExtractor={(item, index) => index.toString()}
         />
       </View>
     </>

@@ -4,7 +4,7 @@ import { ScrollView } from "react-native";
 interface IData {
   key: number;
   name: string;
-  ref: string;
+  refAPI: string;
 }
 interface Props {
   TopListElementComponent?: React.ReactNode;
