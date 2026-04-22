@@ -1,8 +1,9 @@
 import { APP_COLOR } from "@/src/utils/APP_COLOR";
 
 import { Image } from "expo-image";
+import { router } from "expo-router";
 import React from "react";
-import { Dimensions, StyleSheet, Text, View } from "react-native";
+import { Dimensions, Pressable, StyleSheet, Text, View } from "react-native";
 import Animated, {
   Extrapolation,
   interpolate,
@@ -71,26 +72,34 @@ const AnimatedRestaurantItem = ({
   });
 
   return (
-    <Animated.View
-      style={[{ backgroundColor: "#efefef", width: ITEM_WIDTH }, animatedStyle]}
+    <Pressable
+      onPress={() => router.navigate("/product")}
+      style={{ borderWidth: 1, borderColor: "red" }}
     >
-      <Image
-        style={{ height: 130, width: "100%", resizeMode: "cover" }}
-        source={`${baseImg}/${item.image}`}
-      />
-      <View style={{ padding: 5 }}>
-        <Text
-          numberOfLines={1}
-          ellipsizeMode="tail"
-          style={{ fontWeight: "bold", maxWidth: ITEM_WIDTH }}
-        >
-          {item.name}
-        </Text>
-        <View style={styles.sale}>
-          <Text style={{ color: APP_COLOR.ORANGE }}>Flash Sale</Text>
+      <Animated.View
+        style={[
+          { backgroundColor: "#efefef", width: ITEM_WIDTH },
+          animatedStyle,
+        ]}
+      >
+        <Image
+          style={{ height: 130, width: "100%", resizeMode: "cover" }}
+          source={`${baseImg}/${item.image}`}
+        />
+        <View style={{ padding: 5 }}>
+          <Text
+            numberOfLines={1}
+            ellipsizeMode="tail"
+            style={{ fontWeight: "bold", maxWidth: ITEM_WIDTH }}
+          >
+            {item.name}
+          </Text>
+          <View style={styles.sale}>
+            <Text style={{ color: APP_COLOR.ORANGE }}>Flash Sale</Text>
+          </View>
         </View>
-      </View>
-    </Animated.View>
+      </Animated.View>
+    </Pressable>
   );
 };
 

@@ -4,7 +4,6 @@ import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import "react-native-reanimated";
 import { RootSiblingParent } from "react-native-root-siblings";
-import { SafeAreaView } from "react-native-safe-area-context";
 
 export const unstable_settings = {
   anchor: "(tabs)",
@@ -47,12 +46,8 @@ export default function RootLayout() {
               }}
             />
             <Stack.Screen
-              name="(user)/Home_Detail"
-              options={{ title: "Detail" }}
-            />
-            <Stack.Screen
-              name="(user)/LoginDetail"
-              options={{ title: "Login_Detail" }}
+              name="product/index"
+              options={{ headerShown: false }}
             />
           </Stack>
           <StatusBar style="auto" />
