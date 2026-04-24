@@ -28,7 +28,6 @@ export default function CollectionHome(props: IProps) {
   useEffect(() => {
     const fetchData = async () => {
       const res = await GetTopRestaurant(refAPI);
-
       if (res.data) {
         setRestaurant(res.data);
       } else {

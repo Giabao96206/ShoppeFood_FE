@@ -37,4 +37,40 @@ declare global {
     createdAt: Date;
     updatedAt: Date;
   }
+
+  interface IMenu {
+    _id: string;
+    title: string;
+    restaurant: string;
+    menuItems: IMenuItems[];
+  }
+  interface IMenuRestaurant {
+    _id: string;
+    name: string;
+    phone: string;
+    address: string;
+    email: string;
+    rating: number;
+    image: string;
+    isActive: boolean;
+    createdAt: Date;
+    updatedAt: Date;
+    menus: IMenu[];
+  }
+
+  interface IMenuItems {
+    _id: string;
+    menu: string;
+    title: string;
+    description: string;
+    basePrice: number;
+    image: string;
+    options: {
+      title: string;
+      description: string;
+      additonalPrice: number;
+    }[];
+    updatedAt: Date;
+    createdAt: Date;
+  }
 }

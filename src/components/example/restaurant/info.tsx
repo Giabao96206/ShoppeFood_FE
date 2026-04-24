@@ -5,9 +5,10 @@ import { Text, View } from "react-native";
 
 interface IProps {
   infoHeight: number;
+  restaurant: IMenuRestaurant | null;
 }
 const Info = (props: IProps) => {
-  const { infoHeight } = props;
+  const { infoHeight, restaurant } = props;
 
   return (
     <View
@@ -31,8 +32,7 @@ const Info = (props: IProps) => {
           <Text>{` `}</Text>
           <Ionicons name="shield-checkmark" size={20} color="orange" />
           <Text style={{ fontSize: 20, fontWeight: "600" }}>
-            {" "}
-            Mì cay ăn vặt - hỏi dân it Trái Cây Sạch & Đồ Ăn Vặt
+            {restaurant?.name}
           </Text>
         </Text>
       </View>

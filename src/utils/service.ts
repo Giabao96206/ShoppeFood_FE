@@ -32,6 +32,10 @@ export const GetTopRestaurant = (ref: string) => {
   return axios.get<IBackendRes<IRestaurant[]>>(url);
 };
 
+export const GetMenuRes = (id: string) => {
+  const url = `/menu/${id}`;
+  return axios.get<IBackendRes<IMenuRestaurant>>(url);
+};
 export const printAsyncStorage = () => {
   AsyncStorage.getAllKeys((err, keys) => {
     AsyncStorage.multiGet(keys!, (error, stores) => {
@@ -41,5 +45,19 @@ export const printAsyncStorage = () => {
       });
       console.log(JSON.stringify(asyncStorage, null, 2));
     });
+  });
+};
+
+export const processDataRestaurantMenu = (
+  restaurant: IMenuRestaurant | null,
+) => {
+  if (!restaurant) return [];
+  return restaurant?.menus?.map((menu, index) => {
+    return {
+      index,
+      key: menu._id,
+      title: menu.title,
+      data: menu.menuItems,
+    };
   });
 };

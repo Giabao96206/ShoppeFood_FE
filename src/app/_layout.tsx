@@ -49,6 +49,10 @@ export default function RootLayout() {
               name="product/index"
               options={{ headerShown: false }}
             />
+            <Stack.Screen
+              name="product/[id]"
+              options={{ headerShown: false }}
+            />
           </Stack>
           <StatusBar style="auto" />
           {/* </SafeAreaView> */}

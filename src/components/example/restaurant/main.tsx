@@ -1,5 +1,6 @@
-import demo from "@/src/assets/images/demo.jpg";
 import { APP_COLOR } from "@/src/utils/APP_COLOR";
+import { processDataRestaurantMenu } from "@/src/utils/service";
+import Entypo from "@expo/vector-icons/Entypo";
 import { useRef, useState } from "react";
 import {
   Dimensions,
@@ -32,7 +33,15 @@ const IMAGE_HEIGHT = 220;
 const INFO_HEIGHT = 250;
 const SLIDE_MENU_HEIGHT = 50;
 
-const RMain = () => {
+interface IProps {
+  restaurant: IMenuRestaurant | null;
+}
+const RMain = (props: IProps) => {
+  const { restaurant } = props;
+
+  const baseImg = `${process.env.EXPO_PUBLIC_API_URL}/images/restaurant`;
+  const baseImg2 = `${process.env.EXPO_PUBLIC_API_URL}/images/menu-item`;
+
   const scrollY = useSharedValue<number>(0);
 
   const sectionListRef = useRef<SectionList>(null);
@@ -226,6 +235,9 @@ const RMain = () => {
     },
   ).current;
 
+  console.log(restaurant);
+  console.log(processDataRestaurantMenu(restaurant));
+
   return (
     <View>
       <StickyHeader
@@ -239,19 +251,22 @@ const RMain = () => {
 
       {/*  Image */}
       <View style={styles.header}>
-        <Image source={demo} style={styles.headerImage} />
+        <Image
+          source={{ uri: `${baseImg}/${restaurant?.image}` }}
+          style={styles.headerImage}
+        />
       </View>
 
       {/* Info */}
       <Animated.View style={[animatedInfoStyle]}>
-        <Info infoHeight={INFO_HEIGHT} />
+        <Info infoHeight={INFO_HEIGHT} restaurant={restaurant} />
       </Animated.View>
 
       {/* Sticky Menu */}
       <Animated.FlatList
         ref={flatListRef}
         horizontal
-        data={DATA}
+        data={processDataRestaurantMenu(restaurant)}
         renderItem={({ item, index }) => (
           <TouchableOpacity
             key={index}
@@ -303,18 +318,48 @@ const RMain = () => {
           paddingTop: IMAGE_HEIGHT + INFO_HEIGHT + SLIDE_MENU_HEIGHT - 2,
           paddingBottom: 30,
         }}
-        sections={DATA}
-        renderItem={({ item, index }: { item: any; index: any }) => (
-          <TouchableOpacity onPress={() => alert("render item sections")}>
-            <View style={{ paddingHorizontal: 10, backgroundColor: "white" }}>
-              <View style={{ backgroundColor: "pink", height: 50 }}>
-                <Text>
-                  {item} - {index}
-                </Text>
+        sections={processDataRestaurantMenu(restaurant)}
+        renderItem={({ item, index }: { item: any; index: any }) => {
+          const menuIT = item as IMenuItems;
+          return (
+            <View
+              style={{
+                backgroundColor: "white",
+                padding: 10,
+                gap: 10,
+                flexDirection: "row",
+              }}
+            >
+              <View>
+                <Image
+                  style={{ width: 100, height: 100 }}
+                  source={{ uri: `${baseImg2}/${menuIT.image}` }}
+                />
+              </View>
+              <View style={{ flex: 1, gap: 10 }}>
+                <View>
+                  <Text> {menuIT.title}</Text>
+                </View>
+                <View>
+                  <Text> {menuIT.description}</Text>
+                </View>
+                <View
+                  style={{
+                    justifyContent: "space-between",
+                    flexDirection: "row",
+                  }}
+                >
+                  <Text> {menuIT.basePrice}</Text>
+                  <Entypo
+                    name="squared-plus"
+                    size={24}
+                    color={APP_COLOR.ORANGE}
+                  />
+                </View>
               </View>
             </View>
-          </TouchableOpacity>
-        )}
+          );
+        }}
         renderSectionHeader={({ section }: { section: any }) => (
           <View
             style={{
@@ -323,9 +368,7 @@ const RMain = () => {
               paddingTop: 10,
             }}
           >
-            <Text style={{ textTransform: "uppercase" }}>
-              {section.title} - {section.index}
-            </Text>
+            <Text style={{ textTransform: "uppercase" }}>{section.title}</Text>
           </View>
         )}
         ItemSeparatorComponent={() => (

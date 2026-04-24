@@ -17,12 +17,6 @@ const ITEM_WIDTH = 130;
 const ITEM_GAP = 5;
 const FULL_ITEM_SIZE = ITEM_WIDTH + ITEM_GAP; // 135
 
-interface IRestaurant {
-  name: string;
-  image: string;
-  // Thêm các fields khác nếu có
-}
-
 // --- TÁCH RENDER ITEM THÀNH COMPONENT RIÊNG ĐỂ CHẠY ANIMATION ---
 const AnimatedRestaurantItem = ({
   item,
@@ -73,7 +67,12 @@ const AnimatedRestaurantItem = ({
 
   return (
     <Pressable
-      onPress={() => router.navigate("/product")}
+      onPress={() =>
+        router.navigate({
+          pathname: "/product/[id]",
+          params: { id: item._id },
+        })
+      }
       style={{ borderWidth: 1, borderColor: "red" }}
     >
       <Animated.View
