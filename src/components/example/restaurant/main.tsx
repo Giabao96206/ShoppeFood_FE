@@ -1,5 +1,8 @@
 import { APP_COLOR } from "@/src/utils/APP_COLOR";
-import { processDataRestaurantMenu } from "@/src/utils/service";
+import {
+  currencyFormatter,
+  processDataRestaurantMenu,
+} from "@/src/utils/service";
 import Entypo from "@expo/vector-icons/Entypo";
 import { useRef, useState } from "react";
 import {
@@ -235,9 +238,6 @@ const RMain = (props: IProps) => {
     },
   ).current;
 
-  console.log(restaurant);
-  console.log(processDataRestaurantMenu(restaurant));
-
   return (
     <View>
       <StickyHeader
@@ -349,7 +349,10 @@ const RMain = (props: IProps) => {
                     flexDirection: "row",
                   }}
                 >
-                  <Text> {menuIT.basePrice}</Text>
+                  <Text style={{ color: APP_COLOR.ORANGE }}>
+                    {" "}
+                    {currencyFormatter(menuIT.basePrice)}
+                  </Text>
                   <Entypo
                     name="squared-plus"
                     size={24}

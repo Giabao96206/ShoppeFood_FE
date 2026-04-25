@@ -17,7 +17,6 @@ export const resendcode = (email: string) => {
 };
 
 export const LoginAccount = (email: string, password: string) => {
-  console.log(email, password);
   const url = "/login";
   return axios.post<IBackendRes<UserLogin>>(url, { email, password });
 };
@@ -43,7 +42,6 @@ export const printAsyncStorage = () => {
       stores?.map((result, i, store) => {
         asyncStorage[store[i][0]] = store[i][1];
       });
-      console.log(JSON.stringify(asyncStorage, null, 2));
     });
   });
 };
@@ -60,4 +58,20 @@ export const processDataRestaurantMenu = (
       data: menu.menuItems,
     };
   });
+};
+
+export const currencyFormatter = (value: any) => {
+  const options = {
+    significantDigits: 2,
+    thousandsSeparator: ".",
+    decimalSeparator: ",",
+    symbol: "đ",
+  };
+  if (typeof value !== "number") value = 0.0;
+  value = value.toFixed(options.significantDigits);
+  const [currency, decimal] = value.split(".");
+  return `${currency.replace(
+    /\B(?=(\d{3})+(?!\d))/g,
+    options.thousandsSeparator,
+  )} ${options.symbol}`;
 };
