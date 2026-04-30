@@ -113,7 +113,7 @@ export default function SingUp() {
                 value={values.password}
                 error={errors.password}
               />
-              <View style={{ marginVertical: 10 }}> </View>
+              <View style={{ marginVertical: 10 }}></View>
               <ShareButton
                 title="Đăng Ký"
                 onPress={handleSubmit as any}

@@ -1,4 +1,5 @@
 import RMain from "@/src/components/example/restaurant/main";
+import { useCurrentApp } from "@/src/context/app.context";
 import { GetMenuRes } from "@/src/utils/service";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
@@ -8,7 +9,7 @@ import { Dimensions, View } from "react-native";
 const { height: sHeight, width: sWidth } = Dimensions.get("window");
 export default function Product() {
   const { id } = useLocalSearchParams();
-  const [restaurant, setRestaurant] = useState<IMenuRestaurant | null>(null);
+  const { restaurant, setRestaurant } = useCurrentApp();
   const [loading, setLoading] = useState<boolean>(false);
   useEffect(() => {
     const fetch = async () => {
@@ -27,7 +28,7 @@ export default function Product() {
     <>
       <View style={{ flex: 1 }}>
         {loading === false ? (
-          <RMain restaurant={restaurant} />
+          <RMain />
         ) : (
           <ContentLoader
             speed={2}

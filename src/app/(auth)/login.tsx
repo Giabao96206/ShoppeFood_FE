@@ -123,7 +123,7 @@ export default function Login() {
                   value={values.password}
                   error={errors.password}
                 />
-                <View style={{ marginVertical: 3 }}> </View>
+                <View style={{ marginVertical: 3 }}></View>
                 <View
                   style={{
                     flexDirection: "row",
@@ -135,7 +135,7 @@ export default function Login() {
                   </Text>
                 </View>
 
-                <View style={{ marginVertical: 3 }}> </View>
+                <View style={{ marginVertical: 3 }}></View>
                 <ShareButton
                   isLoading={isLoading}
                   title="Đăng Nhập"

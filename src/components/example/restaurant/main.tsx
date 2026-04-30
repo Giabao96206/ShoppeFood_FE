@@ -1,9 +1,6 @@
+import { useCurrentApp } from "@/src/context/app.context";
 import { APP_COLOR } from "@/src/utils/APP_COLOR";
-import {
-  currencyFormatter,
-  processDataRestaurantMenu,
-} from "@/src/utils/service";
-import Entypo from "@expo/vector-icons/Entypo";
+import { processDataRestaurantMenu } from "@/src/utils/service";
 import { useRef, useState } from "react";
 import {
   Dimensions,
@@ -25,6 +22,8 @@ import Animated, {
   useSharedValue,
 } from "react-native-reanimated";
 import Info from "./info";
+import ItemQuantity from "./oder/item.quantity";
+import StickyFooter from "./oder/sticky.footer";
 import StickyHeader from "./sticky.header";
 
 const AnimatedSectionList = Animated.createAnimatedComponent(SectionList);
@@ -36,14 +35,10 @@ const IMAGE_HEIGHT = 220;
 const INFO_HEIGHT = 250;
 const SLIDE_MENU_HEIGHT = 50;
 
-interface IProps {
-  restaurant: IMenuRestaurant | null;
-}
-const RMain = (props: IProps) => {
-  const { restaurant } = props;
+const RMain = () => {
+  const { restaurant } = useCurrentApp();
 
   const baseImg = `${process.env.EXPO_PUBLIC_API_URL}/images/restaurant`;
-  const baseImg2 = `${process.env.EXPO_PUBLIC_API_URL}/images/menu-item`;
 
   const scrollY = useSharedValue<number>(0);
 
@@ -150,81 +145,6 @@ const RMain = (props: IProps) => {
     };
   });
 
-  const DATA = [
-    {
-      title: "Main dishes",
-      data: ["Pizza", "Burger", "Risotto"],
-      index: 0,
-      key: "menu-0",
-    },
-    {
-      title: "Sides",
-      data: ["French Fries", "Onion Rings", "Fried Shrimps"],
-      index: 1,
-      key: "menu-1",
-    },
-    {
-      title: "Drinks",
-      data: ["Water", "Coke", "Beer"],
-      index: 2,
-      key: "menu-2",
-    },
-    {
-      title: "Desserts",
-      data: ["Cheese Cake", "Ice Cream"],
-      index: 3,
-      key: "menu-3",
-    },
-    {
-      title: "Desserts1",
-      data: ["Cheese Cake", "Ice Cream"],
-      index: 4,
-      key: "menu-4",
-    },
-    {
-      title: "Desserts2",
-      data: ["Cheese Cake", "Ice Cream"],
-      index: 5,
-      key: "menu-5",
-    },
-    {
-      title: "Desserts3",
-      data: ["Cheese Cake", "Ice Cream"],
-      index: 6,
-      key: "menu-6",
-    },
-    {
-      title: "Desserts4",
-      data: ["Cheese Cake", "Ice Cream"],
-      index: 7,
-      key: "menu-7",
-    },
-    {
-      title: "Desserts5",
-      data: ["Cheese Cake", "Ice Cream"],
-      index: 8,
-      key: "menu-8",
-    },
-    {
-      title: "Desserts 9",
-      data: ["Cheese Cake", "Ice Cream"],
-      index: 9,
-      key: "menu-9",
-    },
-    {
-      title: "Desserts10",
-      data: ["Cheese Cake", "Ice Cream"],
-      index: 10,
-      key: "menu-10",
-    },
-    {
-      title: "Desserts11",
-      data: ["Cheese Cake", "Ice Cream", "Cheese Cake", "Ice Cream"],
-      index: 11,
-      key: "menu-11",
-    },
-  ];
-
   const onViewableItemsChanged = useRef(
     ({ viewableItems }: { viewableItems: ViewToken[] }) => {
       if (viewableItems.length > 0 && !blockUpdateRef.current) {
@@ -316,51 +236,17 @@ const RMain = (props: IProps) => {
         stickySectionHeadersEnabled={false}
         contentContainerStyle={{
           paddingTop: IMAGE_HEIGHT + INFO_HEIGHT + SLIDE_MENU_HEIGHT - 2,
-          paddingBottom: 30,
+          paddingBottom: 50,
         }}
         sections={processDataRestaurantMenu(restaurant)}
         renderItem={({ item, index }: { item: any; index: any }) => {
           const menuIT = item as IMenuItems;
           return (
-            <View
-              style={{
-                backgroundColor: "white",
-                padding: 10,
-                gap: 10,
-                flexDirection: "row",
-              }}
-            >
-              <View>
-                <Image
-                  style={{ width: 100, height: 100 }}
-                  source={{ uri: `${baseImg2}/${menuIT.image}` }}
-                />
-              </View>
-              <View style={{ flex: 1, gap: 10 }}>
-                <View>
-                  <Text> {menuIT.title}</Text>
-                </View>
-                <View>
-                  <Text> {menuIT.description}</Text>
-                </View>
-                <View
-                  style={{
-                    justifyContent: "space-between",
-                    flexDirection: "row",
-                  }}
-                >
-                  <Text style={{ color: APP_COLOR.ORANGE }}>
-                    {" "}
-                    {currencyFormatter(menuIT.basePrice)}
-                  </Text>
-                  <Entypo
-                    name="squared-plus"
-                    size={24}
-                    color={APP_COLOR.ORANGE}
-                  />
-                </View>
-              </View>
-            </View>
+            <ItemQuantity
+              menuIT={menuIT}
+              restaurant={restaurant}
+              isModal={false}
+            />
           );
         }}
         renderSectionHeader={({ section }: { section: any }) => (
@@ -394,6 +280,7 @@ const RMain = (props: IProps) => {
         onViewableItemsChanged={onViewableItemsChanged}
         onMomentumScrollEnd={() => (blockUpdateRef.current = false)}
       />
+      <StickyFooter sWidth={sWidth} restaurant={restaurant} />
     </View>
   );
 };

@@ -68,9 +68,22 @@ declare global {
     options: {
       title: string;
       description: string;
-      additonalPrice: number;
+      additionalPrice: number;
     }[];
     updatedAt: Date;
     createdAt: Date;
+  }
+
+  interface ICart {
+    [key: string]: {
+      sum: number;
+      quantity: number;
+      items: {
+        [key: string]: {
+          quantity: number;
+          data: IMenuItem;
+        };
+      };
+    };
   }
 }
