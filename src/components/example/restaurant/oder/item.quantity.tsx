@@ -12,11 +12,12 @@ const ItemQuantity = (props: Irops) => {
   let quantity: number = 0;
   const { menuIT, restaurant, isModal } = props;
   const { cart, setCart } = useCurrentApp();
-  // console.log(menuIT._id + " " + menuIT.title);
+
   const HandlePresItem = (item: IMenuItems, action: "MINUS" | "PLUS") => {
     if (item.options.length > 0 && isModal === false) {
       router.navigate({
-        pathname: "/product/create.modal",
+        pathname:
+          action === "PLUS" ? "/product/create.modal" : "/product/update.modal",
         params: { menuItemId: menuIT._id },
       });
     } else {
@@ -49,7 +50,7 @@ const ItemQuantity = (props: Irops) => {
       if (cart[restaurant!._id].items[item._id].quantity <= 0) {
         delete cart[restaurant!._id].items[item._id];
       }
-      setCart((prevState: any) => ({ ...prevState, cart }));
+      setCart((prevState: any) => ({ ...prevState, ...cart }));
     }
   };
 

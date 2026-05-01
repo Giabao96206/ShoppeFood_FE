@@ -87,6 +87,15 @@ export default function RootLayout() {
                 animationDuration: 200,
               }}
             />
+            <Stack.Screen
+              name="product/update.modal"
+              options={{
+                headerShown: false,
+                presentation: "transparentModal",
+                animation: "fade",
+                animationDuration: 200,
+              }}
+            />
           </Stack>
           <StatusBar style="auto" />
           {/* </SafeAreaView> */}

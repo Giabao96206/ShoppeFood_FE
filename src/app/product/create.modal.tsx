@@ -10,12 +10,58 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import Animated, { FadeIn, SlideInDown } from "react-native-reanimated";
 
 const CreateModalPage = () => {
-  const { restaurant } = useCurrentApp();
+  const { restaurant, cart, setCart } = useCurrentApp();
   const { menuItemId } = useLocalSearchParams();
 
   const [menuItem, setMenuItem] = useState<IMenuItems | null>(null);
-  console.log(menuItem);
+  const [quantity, setQuantity] = useState<number>(1);
+  const [selectedIndex, setSelectedIndex] = useState<number>(0);
+  const HandlePresItem = (item: IMenuItems, action: "MINUS" | "PLUS") => {
+    if (action === "MINUS" && quantity === 1) return;
+    const total = action === "MINUS" ? -1 : 1;
+    setQuantity((prevQuantity: number) => prevQuantity + total);
+  };
 
+  const HandleAddCart = () => {
+    if (!restaurant?._id || !menuItem) return;
+
+    const newCart = { ...cart };
+
+    if (!newCart[restaurant._id]) {
+      newCart[restaurant._id] = {
+        sum: 0,
+        quantity: 0,
+        items: {},
+      };
+    }
+
+    const store = newCart[restaurant._id];
+    const item = menuItem;
+    const option = item.options[selectedIndex];
+    const keyOption = `${option.title}-${option.description}`;
+
+    store.sum += quantity * (item.basePrice + option.additionalPrice);
+    store.quantity += quantity;
+
+    if (!store.items[item._id]) {
+      store.items[item._id] = {
+        quantity: 0,
+        data: item,
+        extra: {},
+      };
+    }
+
+    const currentItem = store.items[item._id];
+
+    currentItem.quantity += quantity;
+    currentItem.extra = {
+      ...currentItem.extra,
+      [keyOption]: (currentItem.extra?.[keyOption] || 0) + quantity,
+    };
+
+    setCart(newCart);
+    router.back();
+  };
   useEffect(() => {
     if (!restaurant || !menuItemId) return;
 
@@ -25,7 +71,6 @@ const CreateModalPage = () => {
 
     setMenuItem(foundItem || null);
   }, [restaurant, menuItemId]);
-  const HandlePresItem = () => {};
 
   return (
     <Animated.View
@@ -88,7 +133,7 @@ const CreateModalPage = () => {
             <ItemSingle
               menuIT={menuItem}
               showMinus={true}
-              quantity={1}
+              quantity={quantity}
               HandlePresItem={HandlePresItem}
             />
           )}
@@ -138,14 +183,17 @@ const CreateModalPage = () => {
                   }}
                 >
                   <Pressable
+                    onPress={() => setSelectedIndex(index)}
                     style={({ pressed }) => ({
                       opacity: pressed === true ? 0.5 : 1,
                       alignSelf: "flex-start",
                       padding: 2,
                       borderRadius: 2,
-                      backgroundColor: APP_COLOR.ORANGE,
+                      backgroundColor:
+                        index === selectedIndex ? APP_COLOR.ORANGE : "white",
 
-                      borderColor: APP_COLOR.ORANGE,
+                      borderColor:
+                        index === selectedIndex ? APP_COLOR.ORANGE : "grey",
                       borderWidth: 1,
                     })}
                   >
@@ -172,7 +220,7 @@ const CreateModalPage = () => {
               backgroundColor: APP_COLOR.ORANGE,
               borderRadius: 3,
             })}
-            onPress={() => router.back()}
+            onPress={HandleAddCart}
           >
             <Text style={{ textAlign: "center", color: "white" }}>
               Thêm vào giỏ hàng
