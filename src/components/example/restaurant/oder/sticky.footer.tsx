@@ -2,6 +2,7 @@ import { useCurrentApp } from "@/src/context/app.context";
 import { APP_COLOR } from "@/src/utils/APP_COLOR";
 import { currencyFormatter } from "@/src/utils/service";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
+import { router } from "expo-router";
 import { Alert, Pressable, Text, TouchableOpacity, View } from "react-native";
 
 interface IProp {
@@ -81,9 +82,7 @@ const StickyFooter = (props: IProp) => {
           </View>
 
           {/* Bên phải */}
-          <TouchableOpacity
-            style={{ flexDirection: "row", alignItems: "center", gap: 10 }}
-          >
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
             <Text
               style={{
                 color: APP_COLOR.ORANGE,
@@ -93,21 +92,25 @@ const StickyFooter = (props: IProp) => {
             >
               {currencyFormatter(getSum())}
             </Text>
-            <Text
-              style={{
-                color: "white",
-                backgroundColor: APP_COLOR.ORANGE,
-                padding: 10,
-                fontSize: 16,
-                fontWeight: "600",
-                borderRadius: 10,
-              }}
+            <TouchableOpacity
+              onPress={() => router.navigate("/product/orderLast")}
             >
-              Giao hàng
-            </Text>
-          </TouchableOpacity>
+              <Text
+                style={{
+                  color: "white",
+                  backgroundColor: APP_COLOR.ORANGE,
+                  padding: 10,
+                  fontSize: 16,
+                  fontWeight: "600",
+                  borderRadius: 10,
+                }}
+              >
+                Giao hàng
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
-      )}                   
+      )}
     </>
   );
 };

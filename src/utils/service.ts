@@ -75,3 +75,23 @@ export const currencyFormatter = (value: any) => {
     options.thousandsSeparator,
   )} ${options.symbol}`;
 };
+
+export const PlaceOrder = (data: any) => {
+  const url = "/api/order";
+  return axios.post(url, { ...data });
+};
+
+export const GetOrderHistory = () => {
+  const url = "/api/getOrder";
+  return axios.get<IBackendRes<IOrderHistory[]>>(url);
+};
+
+export const EditAccount = (data: any) => {
+  const url = "/editUser";
+  return axios.post<IBackendRes<UserEdit>>(url, data);
+};
+
+export const CanCelOrder = (OrderID: string) => {
+  const url = "/cancelOrder";
+  return axios.post(url, { OrderID });
+};

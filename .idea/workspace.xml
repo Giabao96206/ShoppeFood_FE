@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="d808baf8-bfae-495b-9a1b-a2c327f60e15" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/(tabs)/_layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(tabs)/_layout.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/(tabs)/account.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(tabs)/account.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/(tabs)/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(tabs)/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/(tabs)/order.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(tabs)/order.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/(user)/Home.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/(user)/Home_Detail.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/(user)/LoginDetail.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/_layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/_layout.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/product/[id].tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/product/create.modal.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/product/index.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/product/item.quantity.tsx_" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/product/update.modal.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/example/restaurant/main.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/example/restaurant/main.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/example/restaurant/oder/sticky.footer.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/example/restaurant/oder/sticky.footer.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/home/location.home.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/home/location.home.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/inputs/share.inputs.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/inputs/share.inputs.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/context/app.context.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/context/app.context.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/types/model.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/model.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utils/service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tsconfig.json" beforeDir="false" afterPath="$PROJECT_DIR$/tsconfig.json" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ExternalProjectsManager">
+    <system id="GRADLE">
+      <state>
+        <projects_view>
+          <tree_state>
+            <expand />
+            <select />
+          </tree_state>
+        </projects_view>
+      </state>
+    </system>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "Giabao96206"
+  }
+}]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/Giabao96206/ShoppeFood_FE.git",
+    "accountId": "3df6942f-a141-47f8-bcc3-df9895a9fa5d"
+  }
+}]]></component>
+  <component name="McpProjectServerCommands">
+    <commands />
+    <urls />
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 4
+}]]></component>
+  <component name="ProjectId" id="3DTonaMUvmWSEcmBF4qbwyJQflL" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.MCP Project settings loaded": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
+    "git-widget-placeholder": "main",
+    "ignore.virus.scanning.warn.message": "true",
+    "junie.onboarding.icon.badge.shown": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "D:/React/ProJect3/Demo1",
+    "to.speed.mode.migration.done": "true"
+  }
+}]]></component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-30f59d01ecdd-2fc7cc6b9a17-intellij.indexing.shared.core-IU-253.30387.90" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="d808baf8-bfae-495b-9a1b-a2c327f60e15" name="Changes" comment="" />
+      <created>1778315589348</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1778315589348</updated>
+    </task>
+    <servers />
+  </component>
+</project>

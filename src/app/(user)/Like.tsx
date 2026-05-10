@@ -1,9 +1,9 @@
-import { View, TouchableOpacity, Text } from "react-native";
 import { ThemedText } from "@/src/components/themed-text";
 import { router } from "expo-router";
+import { Text, TouchableOpacity, View } from "react-native";
 // import { Link } from "expo-router";
 
-export default function Home() {
+export default function Like() {
   return (
     <View
       style={{
@@ -13,9 +13,9 @@ export default function Home() {
         backgroundColor: "green",
       }}
     >
-      <ThemedText>Em như làn mây như lời hát</ThemedText>
+      <ThemedText>Trang Login Detail</ThemedText>
       <TouchableOpacity
-        onPress={() => router.navigate("/Home_Detail")}
+        onPress={() => router.canGoBack()}
         style={{ backgroundColor: "red", padding: 10, borderRadius: 5 }}
       >
         <Text>Home</Text>

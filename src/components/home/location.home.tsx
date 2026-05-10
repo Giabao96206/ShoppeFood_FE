@@ -11,6 +11,7 @@ import {
 import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 
 import bg from "@/src/assets/images/mapp.jpg";
+import { useCurrentApp } from "@/src/context/app.context";
 import { Image } from "expo-image";
 const { width, height } = Dimensions.get("window");
 interface Props {
@@ -21,7 +22,7 @@ export default function ShopeeFoodLoading({ onFinish }: Props) {
   const imageScale = useRef(new Animated.Value(0.5)).current;
   const [location, setLocation] =
     useState<Location.LocationObjectCoords | null>(null);
-  const [address, setAddress] = useState<string>("Đang tìm vị trí của bạn...");
+  const { address, setAddress, setHasLocation } = useCurrentApp();
 
   const fadeAnim = useRef(new Animated.Value(1)).current;
   const scaleAnim = useRef(new Animated.Value(1)).current;
@@ -69,6 +70,8 @@ export default function ShopeeFoodLoading({ onFinish }: Props) {
         } else {
           setAddress(`📍 ${finalAddress}`);
         }
+
+        setHasLocation(true); // 🔥 đánh dấu đã lấy
 
         setTimeout(() => {
           startExitAnimation(finalAddress);

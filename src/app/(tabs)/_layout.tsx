@@ -1,10 +1,17 @@
 import { IconSymbol } from "@/src/components/ui/icon-symbol";
+import { useCurrentApp } from "@/src/context/app.context";
 import { APP_COLOR } from "@/src/utils/APP_COLOR";
+import { AntDesign } from "@expo/vector-icons";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import { Image } from "expo-image";
 import { Tabs } from "expo-router";
 import React from "react";
+import { View } from "react-native";
 export default function TabLayout() {
+  const { appState } = useCurrentApp();
+  const BaseImage = appState?.user.avatar;
+  console.log(appState);
   const GetIcon = (routeName: string, focused: boolean, size: number) => {
     if (routeName === "index") {
       return (
@@ -33,10 +40,10 @@ export default function TabLayout() {
         />
       );
     }
-    if (routeName === "notification") {
+    if (routeName === "messages") {
       return (
-        <MaterialIcons
-          name="notifications"
+        <AntDesign
+          name="message"
           size={size}
           color={focused ? APP_COLOR.ORANGE : APP_COLOR.GRAY}
         />
@@ -72,7 +79,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="order"
         options={{
-          headerShown: false,
+          headerTitle: "Đơn Hàng",
         }}
       />
       <Tabs.Screen
@@ -82,15 +89,45 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="notification"
+        name="messages"
         options={{
-          headerShown: false,
+          headerTitle: "Tin Nhắn",
+          headerStyle: {
+            backgroundColor: "#ff3b30",
+          },
         }}
       />
       <Tabs.Screen
         name="account"
         options={{
-          headerShown: false,
+          headerTitle: "Tài Khoản",
+          headerStyle: {
+            backgroundColor: "#ff3b30",
+          },
+          headerTitleContainerStyle: {
+            paddingBottom: 10,
+          },
+          headerTintColor: "#fff",
+          headerLeft: () => (
+            <View
+              style={{
+                marginLeft: 12,
+                paddingHorizontal: 5,
+                paddingBottom: 10,
+              }}
+            >
+              <Image
+                source={{
+                  uri: `${BaseImage}`,
+                }}
+                style={{
+                  width: 50,
+                  height: 50,
+                  borderRadius: 25,
+                }}
+              />
+            </View>
+          ),
         }}
       />
     </Tabs>

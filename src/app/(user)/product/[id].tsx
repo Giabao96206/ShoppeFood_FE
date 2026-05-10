@@ -9,7 +9,7 @@ import { Dimensions, View } from "react-native";
 const { height: sHeight, width: sWidth } = Dimensions.get("window");
 export default function Product() {
   const { id } = useLocalSearchParams();
-  const { restaurant, setRestaurant } = useCurrentApp();
+  const { setRestaurant } = useCurrentApp();
   const [loading, setLoading] = useState<boolean>(false);
   useEffect(() => {
     const fetch = async () => {
@@ -22,7 +22,7 @@ export default function Product() {
     };
 
     fetch();
-  }, [id]);
+  }, [id, setRestaurant]);
 
   return (
     <>

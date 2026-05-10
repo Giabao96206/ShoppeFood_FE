@@ -1,4 +1,4 @@
-export {};
+export { };
 
 declare global {
   interface IBackendRes<T> {
@@ -23,6 +23,17 @@ declare global {
       role?: string;
     };
     access_token: string;
+  }
+
+  interface UserEdit {
+    user: {
+      _id: string;
+      name: string;
+      email: string;
+      avatar: string;
+      phone?: string;
+      role?: string;
+    };
   }
 
   interface IRestaurant {
@@ -81,12 +92,33 @@ declare global {
       items: {
         [key: string]: {
           quantity: number;
-          data: IMenuItem;
+          data: IMenuItems;
           extra?: {
             [key: string]: number;
           };
         };
       };
     };
+  }
+
+  interface IOrderHistory {
+    _id: string;
+    restaurant: IRestaurant;
+    restaurantName: string;
+    user: string;
+    status: string;
+    totalPrice: number;
+    quantity: number;
+    delete: boolean;
+    orderTime: Date;
+    details: {
+      image: string;
+      title: string;
+      option: string;
+      price: number;
+      quantity: number;
+    }[];
+    createdAt: Date;
+    updatedAt: Date;
   }
 }

@@ -4,6 +4,7 @@ import { HeaderComponent } from "@/src/components/home/Header.home";
 import ShopeeFoodLoading from "@/src/components/home/location.home";
 import SearchHome from "@/src/components/home/search.home";
 import TopListHome from "@/src/components/home/top.list.home";
+import { useCurrentApp } from "@/src/context/app.context";
 import React, { useState } from "react";
 import { View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -16,7 +17,7 @@ interface IData {
 }
 const Home = () => {
   const [showLoading, setShowLoading] = useState<boolean>(true);
-  const [address, setAddress] = useState<string>("");
+  const { address, setAddress, hasLocation } = useCurrentApp();
 
   const handleLocationDone = (fetchedAddress: string) => {
     setAddress(fetchedAddress);
@@ -45,7 +46,7 @@ const Home = () => {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View>
-        {showLoading ? (
+        {showLoading && !hasLocation ? (
           <ShopeeFoodLoading onFinish={handleLocationDone} />
         ) : (
           <>

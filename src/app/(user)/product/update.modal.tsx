@@ -112,7 +112,6 @@ const UpdateModal = () => {
       return next;
     });
   };
-
   return (
     <Animated.View
       entering={FadeIn}

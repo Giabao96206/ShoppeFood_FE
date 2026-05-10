@@ -3,5 +3,15 @@
     "source.fixAll": "explicit",
     "source.organizeImports": "explicit",
     "source.sortMembers": "explicit"
+  },
+
+  "background.enabled": true,
+  "background.useDefault": false,
+  "background.customImages": [
+    "file:///C:/Users/PC/Downloads/Nest_Cat.png"
+  ],
+  "background.style": {
+    "opacity": 0.5,
+    "flex": 1,
   }
 }

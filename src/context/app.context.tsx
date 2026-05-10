@@ -9,6 +9,12 @@ interface AppContextType {
   setRestaurant: (v: any) => void;
   cart: ICart | Record<string, never>;
   setCart: (v: any) => void;
+  address: string;
+  setAddress: (v: string) => void;
+  hasLocation: boolean;
+  setHasLocation: (v: boolean) => void;
+  userSend: any;
+  setUserSend: (v: any) => void;
 }
 const AppContext = createContext<AppContextType | null>(null);
 
@@ -19,8 +25,10 @@ const AppProvider = (props: IProps) => {
   const [theme, setTheme] = useState<string>("BaoLight");
   const [appState, setAppState] = useState<UserLogin | null>(null);
   const [restaurant, setRestaurant] = useState<IMenuRestaurant | null>(null);
-
+  const [address, setAddress] = useState<string>("Đang tìm vị trí của bạn...");
   const [cart, setCart] = useState<ICart | Record<string, never>>({});
+  const [hasLocation, setHasLocation] = useState<boolean>(false);
+  const [userSend, setUserSend] = useState<any>("");
   return (
     <AppContext.Provider
       value={{
@@ -32,6 +40,12 @@ const AppProvider = (props: IProps) => {
         setCart,
         restaurant,
         setRestaurant,
+        address,
+        setAddress,
+        hasLocation,
+        setHasLocation,
+        userSend,
+        setUserSend,
       }}
     >
       {props.children}

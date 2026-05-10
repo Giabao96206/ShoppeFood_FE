@@ -42,7 +42,6 @@ const styles = StyleSheet.create({
 export default function Login() {
   const [isLoading, setLoading] = useState<boolean>(false);
   const { setAppState } = useCurrentApp();
-
   const HandleLogin = async (email: string, password: string) => {
     try {
       setLoading(true);

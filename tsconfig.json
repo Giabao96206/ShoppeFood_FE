@@ -17,6 +17,7 @@
     ".expo/types/**/*.ts",
     "expo-env.d.ts",
     "src/components/example/restaurant/main.tsx_",
-    "src/app/product/item.quantity.tsx_"
+    "src/app/(user)/product/item.quantity.tsx_",
+    "src/app/(tabs)/order.tsx"
   ]
 }

@@ -60,6 +60,7 @@ export default function ShareInput(props: Iprops) {
 
   const [isFocus, setIsFocus] = useState<boolean>(false);
   const [isShowPassWord, setIsShowPassWord] = useState<boolean>(false);
+
   return (
     <View style={styles.inputGroups}>
       {title && <Text style={styles.text}>{title}</Text>}
