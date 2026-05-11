@@ -95,3 +95,8 @@ export const CanCelOrder = (OrderID: string) => {
   const url = "/cancelOrder";
   return axios.post(url, { OrderID });
 };
+
+export const GetAllUser = () => {
+  const url = "/getAllUser";
+  return axios.get<IBackendRes<IUser[]>>(url);
+};

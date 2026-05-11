@@ -6,6 +6,7 @@ import "react-native-reanimated";
 import { RootSiblingParent } from "react-native-root-siblings";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import { Image } from "expo-image";
 import AppProvider, { useCurrentApp } from "../context/app.context";
 
 export const unstable_settings = {
@@ -38,8 +39,8 @@ export function ErrorBoundary({ error, retry }: ErrorBoundaryProps) {
 }
 
 function RootLayoutNav() {
-  const { userSend } = useCurrentApp();
-
+  const { userSend, appState } = useCurrentApp();
+  // socket(appState?.user._id);
   return (
     <>
       <Stack>
@@ -122,17 +123,29 @@ function RootLayoutNav() {
                     backgroundColor: "#ddd",
                     justifyContent: "center",
                     alignItems: "center",
+                    overflow: "hidden",
                   }}
                 >
-                  <Text
-                    style={{
-                      fontSize: 16,
-                      fontWeight: "bold",
-                      color: "#555",
-                    }}
-                  >
-                    {userSend?.name?.charAt(0)?.toUpperCase()}
-                  </Text>
+                  {userSend?.avatar ? (
+                    <Image
+                      source={{ uri: userSend.avatar }}
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                      }}
+                      resizeMode="cover"
+                    />
+                  ) : (
+                    <Text
+                      style={{
+                        fontSize: 16,
+                        fontWeight: "bold",
+                        color: "#555",
+                      }}
+                    >
+                      {userSend?.name?.charAt(0)?.toUpperCase() || "U"}
+                    </Text>
+                  )}
                 </View>
 
                 {/* Name + status */}

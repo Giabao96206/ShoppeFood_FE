@@ -1,7 +1,8 @@
 import { useCurrentApp } from "@/src/context/app.context";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { GetAllUser } from "@/src/utils/service";
+import { Image } from "expo-image";
 import { router } from "expo-router";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
     FlatList,
     StyleSheet,
@@ -9,62 +10,85 @@ import {
     TouchableOpacity,
     View,
 } from "react-native";
-
-// 1. Định nghĩa kiểu dữ liệu cho người dùng
-interface User {
-  id: string;
-  name: string;
-  lastMessage: string;
-}
-
-// 2. Định nghĩa kiểu cho Navigation (Chỉnh sửa 'Chat' thành tên màn hình chat thực tế của bạn)
-type RootStackParamList = {
-  Chat: { userName: string };
-};
-
-type MessageScreenNavigationProp = NativeStackNavigationProp<
-  RootStackParamList,
-  "Chat"
->;
-
-// 3. Dữ liệu giả (Mock Data)
-const USERS: User[] = [
-  { id: "1", name: "Nguyễn Văn A", lastMessage: "Hôm nay đi cà phê không?" },
-  { id: "2", name: "Trần Thị B", lastMessage: "Báo cáo làm xong chưa cậu?" },
-  { id: "3", name: "Lê Hoàng C", lastMessage: "Ok chốt vậy nhé!" },
-  { id: "4", name: "Phạm D", lastMessage: "Đang bận chút, xíu gọi lại." },
-];
+import { getSocket } from "../socket";
 
 export default function Message() {
   // Hàm render từng dòng người dùng
   const { setUserSend } = useCurrentApp();
 
-  const renderItem = ({ item }: { item: User }) => (
-    <TouchableOpacity
-      style={styles.userItem}
-      onPress={() => {
-        setUserSend(item);
-        router.navigate({
-          pathname: "/(user)/message/SendMessage",
-          params: { id: item.id, name: item.name },
-        });
-      }}
-    >
-      <View style={styles.avatar}>
-        <Text style={styles.avatarText}>{item.name.charAt(0)}</Text>
-      </View>
-      <View style={styles.userInfo}>
-        <Text style={styles.userName}>{item.name}</Text>
-        <Text style={styles.lastMessage}>{item.lastMessage}</Text>
-      </View>
-    </TouchableOpacity>
+  const [newMessageAlert, setNewMessageAlert] = useState<string | null>(null);
+  const socket = getSocket();
+
+  socket.on("receive_new_message", (message) => {
+    setNewMessageAlert("Bạn có tin nhắn mới");
+
+    // tự ẩn sau 2s
+    setTimeout(() => {
+      setNewMessageAlert(null);
+    }, 2000);
+  });
+
+  const [dataUS, setDataUS] = useState<IUser[]>([]);
+
+  useEffect(() => {
+    const fetchDT = async () => {
+      const res = await GetAllUser();
+      if (res.status === "200") {
+        setDataUS(res.data);
+      }
+    };
+    fetchDT();
+  }, []);
+
+  const renderItem = ({ item }: { item: IUser }) => (
+    <>
+      <TouchableOpacity
+        style={styles.userItem}
+        onPress={() => {
+          setUserSend(item);
+          router.navigate({
+            pathname: "/(user)/message/SendMessage",
+            params: { id: item._id, name: item.name, avatar: item.avatar },
+          });
+        }}
+      >
+        <View style={styles.avatar}>
+          {item.avatar ? (
+            <Image
+              source={{ uri: item.avatar }}
+              style={{ width: 50, height: 50, borderRadius: 25 }}
+            />
+          ) : (
+            <Text style={styles.avatarText}>{item.name.charAt(0)}</Text>
+          )}
+        </View>
+        <View style={styles.userInfo}>
+          <Text style={styles.userName}>{item.name}</Text>
+        </View>
+      </TouchableOpacity>
+    </>
   );
 
   return (
     <View style={styles.container}>
+      {newMessageAlert && (
+        <View
+          style={{
+            position: "absolute",
+            top: 50,
+            alignSelf: "center",
+            backgroundColor: "#000",
+            padding: 10,
+            borderRadius: 10,
+            zIndex: 999,
+          }}
+        >
+          <Text style={{ color: "white" }}>{newMessageAlert}</Text>
+        </View>
+      )}
       <FlatList
-        data={USERS}
-        keyExtractor={(item) => item.id}
+        data={dataUS}
+        keyExtractor={(item) => item._id}
         renderItem={renderItem}
         // Thêm padding dưới cùng để không bị lấp bởi Bottom Tab
         contentContainerStyle={{ paddingBottom: 20 }}

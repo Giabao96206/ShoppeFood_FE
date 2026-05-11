@@ -6,12 +6,17 @@ import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { Image } from "expo-image";
 import { Tabs } from "expo-router";
-import React from "react";
+import React, { useEffect } from "react";
 import { View } from "react-native";
+import { connectSocket } from "../socket";
 export default function TabLayout() {
   const { appState } = useCurrentApp();
   const BaseImage = appState?.user.avatar;
-  console.log(appState);
+  useEffect(() => {
+    if (appState?.access_token) {
+      connectSocket(appState.access_token);
+    }
+  }, [appState?.access_token]);
   const GetIcon = (routeName: string, focused: boolean, size: number) => {
     if (routeName === "index") {
       return (

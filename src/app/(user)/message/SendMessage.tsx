@@ -1,6 +1,8 @@
+import { useCurrentApp } from "@/src/context/app.context";
 import { RouteProp } from "@react-navigation/native";
+import { Image } from "expo-image";
 import { useLocalSearchParams } from "expo-router";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
     FlatList,
     KeyboardAvoidingView,
@@ -11,6 +13,7 @@ import {
     TouchableOpacity,
     View,
 } from "react-native";
+import { getSocket } from "../../socket";
 
 // 1. Định nghĩa kiểu dữ liệu cho Params nhận được từ Navigation
 type RootStackParamList = {
@@ -27,7 +30,32 @@ interface ChatMessage {
 }
 
 export default function ChatScreen() {
-  const { id, name } = useLocalSearchParams();
+  const flatListRef = useRef<FlatList>(null);
+  const { appState } = useCurrentApp();
+  console.log(appState);
+
+  useEffect(() => {
+    const socket = getSocket();
+
+    const handleMessage = (message: any) => {
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: Date.now().toString(),
+          text: message.content,
+          sender: "them",
+        },
+      ]);
+    };
+
+    socket.on("receive_new_message", handleMessage);
+
+    return () => {
+      socket.off("receive_new_message", handleMessage);
+    };
+  }, []);
+  const { id, name, avatar } = useLocalSearchParams();
+
   const [inputText, setInputText] = useState<string>("");
 
   // 3. Dữ liệu tin nhắn giả (Mock Data)
@@ -39,6 +67,7 @@ export default function ChatScreen() {
 
   // Hàm xử lý gửi tin nhắn
   const handleSend = () => {
+    const socket = getSocket();
     if (inputText.trim() === "") return;
 
     const newMessage: ChatMessage = {
@@ -47,15 +76,18 @@ export default function ChatScreen() {
       sender: "me",
     };
 
-    // Thêm tin nhắn mới vào mảng hiện tại
-    setMessages([...messages, newMessage]);
+    socket.emit("send_message", {
+      receiverId: id,
+      content: inputText,
+    });
+
+    setMessages((prev) => [...prev, newMessage]);
+
     setInputText("");
   };
-
   // Hàm render giao diện từng bong bóng chat (Chat Bubble)
   const renderMessage = ({ item }: { item: ChatMessage }) => {
     const isMe = item.sender === "me";
-
     return (
       <View
         style={[
@@ -66,7 +98,10 @@ export default function ChatScreen() {
         {/* Hiển thị Avatar nếu là tin nhắn của người kia */}
         {!isMe && (
           <View style={styles.avatar}>
-            <Text style={styles.avatarText}>{name.charAt(0)}</Text>
+            <Image
+              source={{ uri: avatar as string }}
+              style={{ width: 30, height: 30, borderRadius: 15 }}
+            />
           </View>
         )}
 
@@ -98,6 +133,10 @@ export default function ChatScreen() {
         contentContainerStyle={styles.listContent}
         // Thêm thuộc tính này nếu bạn muốn list luôn cuộn xuống dưới cùng khi có tin nhắn mới
         // inverted={false}
+        ref={flatListRef}
+        onContentSizeChange={() =>
+          flatListRef.current?.scrollToEnd({ animated: true })
+        }
       />
 
       {/* Khu vực nhập tin nhắn */}
@@ -150,9 +189,6 @@ const styles = StyleSheet.create({
     width: 30,
     height: 30,
     borderRadius: 15,
-    backgroundColor: "#007AFF",
-    justifyContent: "center",
-    alignItems: "center",
     marginRight: 8,
   },
   avatarText: {

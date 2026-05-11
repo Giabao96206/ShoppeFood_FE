@@ -121,4 +121,11 @@ declare global {
     createdAt: Date;
     updatedAt: Date;
   }
+
+  interface IUser {
+    _id: string;
+    name: string;
+    email: string;
+    avatar: string;
+  }
 }
