@@ -7,7 +7,9 @@ import { RootSiblingParent } from "react-native-root-siblings";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { Image } from "expo-image";
+import { useEffect, useState } from "react";
 import AppProvider, { useCurrentApp } from "../context/app.context";
+import { getSocket } from "./socket";
 
 export const unstable_settings = {
   anchor: "(tabs)",
@@ -187,6 +189,29 @@ function RootLayoutNav() {
 }
 
 export default function RootLayout() {
+  const [newMessageAlert, setNewMessageAlert] = useState<string | null>(null);
+
+  useEffect(() => {
+    const socket = getSocket();
+    console.log("socket =");
+
+    if (!socket) return;
+
+    const handleNewMessage = (message: any) => {
+      setNewMessageAlert("Bạn có tin nhắn mới");
+
+      setTimeout(() => {
+        setNewMessageAlert(null);
+      }, 2000);
+    };
+
+    socket.on("receive_new_message", handleNewMessage);
+
+    return () => {
+      socket.off("receive_new_message", handleNewMessage);
+    };
+  }, []);
+
   const navTheme = {
     ...DefaultTheme,
     colors: {
@@ -199,6 +224,21 @@ export default function RootLayout() {
     <RootSiblingParent>
       <ThemeProvider value={navTheme}>
         <AppProvider>
+          {newMessageAlert && (
+            <View
+              style={{
+                position: "absolute",
+                top: 50,
+                alignSelf: "center",
+                backgroundColor: "#000",
+                padding: 10,
+                borderRadius: 10,
+                zIndex: 999,
+              }}
+            >
+              <Text style={{ color: "white" }}>{newMessageAlert}</Text>
+            </View>
+          )}
           <RootLayoutNav />
         </AppProvider>
       </ThemeProvider>

@@ -32,10 +32,11 @@ interface ChatMessage {
 export default function ChatScreen() {
   const flatListRef = useRef<FlatList>(null);
   const { appState } = useCurrentApp();
-  console.log(appState);
 
   useEffect(() => {
     const socket = getSocket();
+
+    if (!socket) return;
 
     const handleMessage = (message: any) => {
       setMessages((prev) => [

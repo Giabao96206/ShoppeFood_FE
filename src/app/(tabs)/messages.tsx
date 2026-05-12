@@ -10,23 +10,10 @@ import {
     TouchableOpacity,
     View,
 } from "react-native";
-import { getSocket } from "../socket";
 
 export default function Message() {
   // Hàm render từng dòng người dùng
   const { setUserSend } = useCurrentApp();
-
-  const [newMessageAlert, setNewMessageAlert] = useState<string | null>(null);
-  const socket = getSocket();
-
-  socket.on("receive_new_message", (message) => {
-    setNewMessageAlert("Bạn có tin nhắn mới");
-
-    // tự ẩn sau 2s
-    setTimeout(() => {
-      setNewMessageAlert(null);
-    }, 2000);
-  });
 
   const [dataUS, setDataUS] = useState<IUser[]>([]);
 
@@ -71,21 +58,6 @@ export default function Message() {
 
   return (
     <View style={styles.container}>
-      {newMessageAlert && (
-        <View
-          style={{
-            position: "absolute",
-            top: 50,
-            alignSelf: "center",
-            backgroundColor: "#000",
-            padding: 10,
-            borderRadius: 10,
-            zIndex: 999,
-          }}
-        >
-          <Text style={{ color: "white" }}>{newMessageAlert}</Text>
-        </View>
-      )}
       <FlatList
         data={dataUS}
         keyExtractor={(item) => item._id}
