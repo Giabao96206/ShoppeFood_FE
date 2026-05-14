@@ -31,7 +31,7 @@ interface ChatMessage {
 
 export default function ChatScreen() {
   const flatListRef = useRef<FlatList>(null);
-  const { appState } = useCurrentApp();
+  const { appState, setLastMessgae, lastMessgae } = useCurrentApp();
 
   useEffect(() => {
     const socket = getSocket();
@@ -45,6 +45,7 @@ export default function ChatScreen() {
           id: Date.now().toString(),
           text: message.content,
           sender: "them",
+          conversationId: conversationId,
         },
       ]);
     };
@@ -55,7 +56,7 @@ export default function ChatScreen() {
       socket.off("receive_new_message", handleMessage);
     };
   }, []);
-  const { id, name, avatar } = useLocalSearchParams();
+  const { id, name, avatar, conversationId } = useLocalSearchParams();
 
   const [inputText, setInputText] = useState<string>("");
 
@@ -69,6 +70,7 @@ export default function ChatScreen() {
   // Hàm xử lý gửi tin nhắn
   const handleSend = () => {
     const socket = getSocket();
+    if (!socket) return;
     if (inputText.trim() === "") return;
 
     const newMessage: ChatMessage = {
@@ -82,10 +84,28 @@ export default function ChatScreen() {
       content: inputText,
     });
 
+    setLastMessgae((prev: IUser[]) =>
+      prev.map((user) =>
+        user._id === conversationId
+          ? {
+              ...user,
+              lastMessage: {
+                ...user.lastMessage,
+                sender_id: appState?.user._id,
+                content: newMessage.text,
+                createdAt: new Date().toISOString(),
+                is_read: false,
+              },
+            }
+          : user,
+      ),
+    );
+
     setMessages((prev) => [...prev, newMessage]);
 
     setInputText("");
   };
+
   // Hàm render giao diện từng bong bóng chat (Chat Bubble)
   const renderMessage = ({ item }: { item: ChatMessage }) => {
     const isMe = item.sender === "me";

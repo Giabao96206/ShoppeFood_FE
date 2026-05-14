@@ -45,7 +45,7 @@ declare global {
     rating: number;
     image: string;
     isActive: boolean;
-    createdAt: Date;
+    createdAt: string;
     updatedAt: Date;
   }
 
@@ -122,10 +122,22 @@ declare global {
     updatedAt: Date;
   }
 
+  interface ILastMessage {
+    message_id: string;
+    sender_id: string;
+    content: string;
+    is_read: boolean;
+    createdAt: string;
+  }
+
   interface IUser {
     _id: string;
-    name: string;
-    email: string;
-    avatar: string;
+    otherUser: {
+      _id: string;
+      name: string;
+      avatar: string;
+      last_seen: Date;
+    };
+    lastMessage: ILastMessage;
   }
 }

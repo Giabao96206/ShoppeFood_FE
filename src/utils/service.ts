@@ -98,5 +98,5 @@ export const CanCelOrder = (OrderID: string) => {
 
 export const GetAllUser = () => {
   const url = "/getAllUser";
-  return axios.get<IBackendRes<IUser[]>>(url);
+  return axios.post<IBackendRes<IUser[]>>(url);
 };

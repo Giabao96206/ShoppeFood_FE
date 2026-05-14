@@ -15,6 +15,8 @@ interface AppContextType {
   setHasLocation: (v: boolean) => void;
   userSend: any;
   setUserSend: (v: any) => void;
+  lastMessgae: IUser[];
+  setLastMessgae: (v: any) => void;
 }
 const AppContext = createContext<AppContextType | null>(null);
 
@@ -29,6 +31,8 @@ const AppProvider = (props: IProps) => {
   const [cart, setCart] = useState<ICart | Record<string, never>>({});
   const [hasLocation, setHasLocation] = useState<boolean>(false);
   const [userSend, setUserSend] = useState<any>("");
+  const [lastMessgae, setLastMessgae] = useState<any>("");
+
   return (
     <AppContext.Provider
       value={{
@@ -46,6 +50,8 @@ const AppProvider = (props: IProps) => {
         setHasLocation,
         userSend,
         setUserSend,
+        lastMessgae,
+        setLastMessgae,
       }}
     >
       {props.children}

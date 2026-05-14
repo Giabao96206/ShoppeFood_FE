@@ -5,10 +5,9 @@ import ShopeeFoodLoading from "@/src/components/home/location.home";
 import SearchHome from "@/src/components/home/search.home";
 import TopListHome from "@/src/components/home/top.list.home";
 import { useCurrentApp } from "@/src/context/app.context";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { getSocket } from "../socket";
 
 interface IData {
   key: number;
@@ -19,27 +18,6 @@ interface IData {
 const Home = () => {
   const [showLoading, setShowLoading] = useState<boolean>(true);
   const { address, setAddress, hasLocation, appState } = useCurrentApp();
-  const [newMessageAlert, setNewMessageAlert] = useState<string | null>(null);
-
-  useEffect(() => {
-    const socket = getSocket();
-
-    if (!socket) return;
-
-    const handleNewMessage = (message: any) => {
-      setNewMessageAlert("Bạn có tin nhắn mới");
-
-      setTimeout(() => {
-        setNewMessageAlert(null);
-      }, 2000);
-    };
-
-    socket.on("receive_new_message", handleNewMessage);
-
-    return () => {
-      socket.off("receive_new_message", handleNewMessage);
-    };
-  }, []);
 
   const handleLocationDone = (fetchedAddress: string) => {
     setAddress(fetchedAddress);

@@ -7,9 +7,8 @@ import { RootSiblingParent } from "react-native-root-siblings";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { Image } from "expo-image";
-import { useEffect, useState } from "react";
 import AppProvider, { useCurrentApp } from "../context/app.context";
-import { getSocket } from "./socket";
+import AlerSocket from "./socket.aler";
 
 export const unstable_settings = {
   anchor: "(tabs)",
@@ -42,6 +41,31 @@ export function ErrorBoundary({ error, retry }: ErrorBoundaryProps) {
 
 function RootLayoutNav() {
   const { userSend, appState } = useCurrentApp();
+
+  const getLastSeen = (date: Date | string) => {
+    const lastSeen = new Date(date);
+    const now = new Date();
+
+    const diffMs = now.getTime() - lastSeen.getTime();
+
+    const minutes = Math.floor(diffMs / 1000 / 60);
+    const hours = Math.floor(minutes / 60);
+    const days = Math.floor(hours / 24);
+
+    if (minutes < 1) {
+      return "Đang hoạt động";
+    }
+
+    if (minutes < 60) {
+      return `${minutes} phút trước`;
+    }
+
+    if (hours < 24) {
+      return `${hours} giờ trước`;
+    }
+
+    return `${days} ngày trước`;
+  };
   // socket(appState?.user._id);
   return (
     <>
@@ -168,7 +192,7 @@ function RootLayoutNav() {
                       color: "green",
                     }}
                   >
-                    Online
+                    {getLastSeen(userSend?.last_seen)}
                   </Text>
                 </View>
               </View>
@@ -189,29 +213,6 @@ function RootLayoutNav() {
 }
 
 export default function RootLayout() {
-  const [newMessageAlert, setNewMessageAlert] = useState<string | null>(null);
-
-  useEffect(() => {
-    const socket = getSocket();
-    console.log("socket =");
-
-    if (!socket) return;
-
-    const handleNewMessage = (message: any) => {
-      setNewMessageAlert("Bạn có tin nhắn mới");
-
-      setTimeout(() => {
-        setNewMessageAlert(null);
-      }, 2000);
-    };
-
-    socket.on("receive_new_message", handleNewMessage);
-
-    return () => {
-      socket.off("receive_new_message", handleNewMessage);
-    };
-  }, []);
-
   const navTheme = {
     ...DefaultTheme,
     colors: {
@@ -224,21 +225,7 @@ export default function RootLayout() {
     <RootSiblingParent>
       <ThemeProvider value={navTheme}>
         <AppProvider>
-          {newMessageAlert && (
-            <View
-              style={{
-                position: "absolute",
-                top: 50,
-                alignSelf: "center",
-                backgroundColor: "#000",
-                padding: 10,
-                borderRadius: 10,
-                zIndex: 999,
-              }}
-            >
-              <Text style={{ color: "white" }}>{newMessageAlert}</Text>
-            </View>
-          )}
+          <AlerSocket />
           <RootLayoutNav />
         </AppProvider>
       </ThemeProvider>
