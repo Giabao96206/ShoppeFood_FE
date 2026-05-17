@@ -30,8 +30,8 @@ const AppProvider = (props: IProps) => {
   const [address, setAddress] = useState<string>("Đang tìm vị trí của bạn...");
   const [cart, setCart] = useState<ICart | Record<string, never>>({});
   const [hasLocation, setHasLocation] = useState<boolean>(false);
-  const [userSend, setUserSend] = useState<any>("");
-  const [lastMessgae, setLastMessgae] = useState<any>("");
+  const [userSend, setUserSend] = useState<IOtherUser | null>();
+  const [lastMessgae, setLastMessgae] = useState<IUser[]>([]);
 
   return (
     <AppContext.Provider

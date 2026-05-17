@@ -40,106 +40,56 @@ export function ErrorBoundary({ error, retry }: ErrorBoundaryProps) {
 }
 
 function RootLayoutNav() {
-  const { userSend, appState } = useCurrentApp();
+  const { userSend, appState, lastMessgae } = useCurrentApp();
 
-  const getLastSeen = (date: Date | string) => {
+  // 👇 FIX 3: Tìm user realtime từ trong lastMessgae để luôn có trạng thái mới nhất
+  const realTimeUser = (lastMessgae || []).find(
+    (item) => item?.otherUser?._id === userSend?._id
+  )?.otherUser || userSend;
+
+  const isOtherUserOnline = realTimeUser?.is_online;
+
+  // 👇 FIX 1: Tối ưu lại hàm tính thời gian và thêm check null
+  const getLastSeenText = (date: Date | string) => {
+    if (!date) return ""; // Tránh lỗi Invalid Date
     const lastSeen = new Date(date);
     const now = new Date();
 
     const diffMs = now.getTime() - lastSeen.getTime();
-
     const minutes = Math.floor(diffMs / 1000 / 60);
     const hours = Math.floor(minutes / 60);
     const days = Math.floor(hours / 24);
 
-    if (minutes < 1) {
-      return "Đang hoạt động";
-    }
-
-    if (minutes < 60) {
-      return `${minutes} phút trước`;
-    }
-
-    if (hours < 24) {
-      return `${hours} giờ trước`;
-    }
-
-    return `${days} ngày trước`;
+    if (minutes < 1) return "Vừa mới truy cập";
+    if (minutes < 60) return `Hoạt động ${minutes} phút trước`;
+    if (hours < 24) return `Hoạt động ${hours} giờ trước`;
+    return `Hoạt động ${days} ngày trước`;
   };
-  // socket(appState?.user._id);
+
   return (
     <>
       <Stack>
+        {/* ... Các Stack.Screen khác giữ nguyên ... */}
+        
         <Stack.Screen name="index" options={{ headerShown: false }} />
-
         <Stack.Screen name="(auth)/SignUp" options={{ headerShown: false }} />
-
         <Stack.Screen name="(auth)/login" options={{ headerShown: false }} />
-
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-
         <Stack.Screen name="(auth)/verify" options={{ headerShown: false }} />
-
         <Stack.Screen name="(auth)/welcome" options={{ headerShown: false }} />
+        <Stack.Screen name="(user)/product/index" options={{ headerShown: false }} />
+        <Stack.Screen name="(user)/product/[id]" options={{ headerShown: false }} />
+        <Stack.Screen name="(user)/product/create.modal" options={{ headerShown: false, presentation: "transparentModal", animation: "fade", animationDuration: 200 }} />
+        <Stack.Screen name="(user)/product/update.modal" options={{ headerShown: false, presentation: "transparentModal", animation: "fade", animationDuration: 200 }} />
+        <Stack.Screen name="(user)/product/orderLast" options={{ title: "Xác nhận đơn hàng", presentation: "transparentModal", animation: "fade", animationDuration: 200 }} />
+        <Stack.Screen name="(user)/account/info" options={{ title: "Thông tin tài khoản" }} />
 
-        <Stack.Screen
-          name="(user)/product/index"
-          options={{ headerShown: false }}
-        />
-
-        <Stack.Screen
-          name="(user)/product/[id]"
-          options={{ headerShown: false }}
-        />
-
-        <Stack.Screen
-          name="(user)/product/create.modal"
-          options={{
-            headerShown: false,
-            presentation: "transparentModal",
-            animation: "fade",
-            animationDuration: 200,
-          }}
-        />
-
-        <Stack.Screen
-          name="(user)/product/update.modal"
-          options={{
-            headerShown: false,
-            presentation: "transparentModal",
-            animation: "fade",
-            animationDuration: 200,
-          }}
-        />
-
-        <Stack.Screen
-          name="(user)/product/orderLast"
-          options={{
-            title: "Xác nhận đơn hàng",
-            presentation: "transparentModal",
-            animation: "fade",
-            animationDuration: 200,
-          }}
-        />
-
-        <Stack.Screen
-          name="(user)/account/info"
-          options={{
-            title: "Thông tin tài khoản",
-          }}
-        />
-
+        {/* Cập nhật Stack của phòng Chat */}
         <Stack.Screen
           name="(user)/message/SendMessage"
           options={{
             headerTitle: () => (
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  gap: 10,
-                }}
-              >
+              <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
                 {/* Avatar */}
                 <View
                   style={{
@@ -152,57 +102,58 @@ function RootLayoutNav() {
                     overflow: "hidden",
                   }}
                 >
-                  {userSend?.avatar ? (
+                  {realTimeUser?.avatar ? (
                     <Image
-                      source={{ uri: userSend.avatar }}
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                      }}
+                      source={{ uri: realTimeUser.avatar }}
+                      style={{ width: "100%", height: "100%" }}
                       resizeMode="cover"
                     />
                   ) : (
-                    <Text
-                      style={{
-                        fontSize: 16,
-                        fontWeight: "bold",
-                        color: "#555",
-                      }}
-                    >
-                      {userSend?.name?.charAt(0)?.toUpperCase() || "U"}
+                    <Text style={{ fontSize: 16, fontWeight: "bold", color: "#555" }}>
+                      {realTimeUser?.name?.charAt(0)?.toUpperCase() || "U"}
                     </Text>
+                  )}
+                  {/* Bổ sung luôn chấm xanh lên Header cho đồng bộ UI */}
+                  {isOtherUserOnline && (
+                    <View
+                      style={{
+                        position: "absolute",
+                        bottom: 0,
+                        right: 0,
+                        width: 12,
+                        height: 12,
+                        borderRadius: 6,
+                        backgroundColor: "#31A24C",
+                        borderWidth: 2,
+                        borderColor: "#FFFFFF",
+                      }}
+                    />
                   )}
                 </View>
 
                 {/* Name + status */}
                 <View>
-                  <Text
-                    style={{
-                      fontSize: 16,
-                      fontWeight: "600",
-                      color: "#111",
-                    }}
-                  >
-                    {userSend?.name}
+                  <Text style={{ fontSize: 16, fontWeight: "600", color: "#111" }}>
+                    {realTimeUser?.name}
                   </Text>
 
+                  {/* 👇 FIX 2: Màu sắc phụ thuộc vào trạng thái Online */}
                   <Text
                     style={{
                       fontSize: 12,
-                      color: "green",
+                      color: isOtherUserOnline ? "#31A24C" : "#65676B", 
+                      fontWeight: isOtherUserOnline ? "500" : "normal"
                     }}
                   >
-                    {getLastSeen(userSend?.last_seen)}
+                    {isOtherUserOnline
+                      ? "Đang hoạt động"
+                      : getLastSeenText(realTimeUser?.last_seen)}
                   </Text>
                 </View>
               </View>
             ),
-
             headerShadowVisible: false,
-
-            headerStyle: {
-              backgroundColor: "#fff",
-            },
+            headerStyle: { backgroundColor: "#fff" },
           }}
         />
       </Stack>
@@ -211,7 +162,6 @@ function RootLayoutNav() {
     </>
   );
 }
-
 export default function RootLayout() {
   const navTheme = {
     ...DefaultTheme,

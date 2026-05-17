@@ -130,14 +130,26 @@ declare global {
     createdAt: string;
   }
 
+  interface IOtherUser {
+    _id: string;
+    name: string;
+    avatar: string;
+    last_seen: Date;
+    is_online?: boolean;
+  }
+
   interface IUser {
     _id: string;
-    otherUser: {
-      _id: string;
-      name: string;
-      avatar: string;
-      last_seen: Date;
-    };
+    otherUser: IOtherUser;
     lastMessage: ILastMessage;
+  }
+
+  interface IMessgages {
+    _id: string;
+    conversation_id: string;
+    sender_id: string;
+    content: string;
+    status: "sent" | "read";
+    createdAt: string;
   }
 }

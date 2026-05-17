@@ -24,7 +24,6 @@ const AlerSocket = () => {
                   sender_id: message.sender_id,
                   content: message.content,
                   createdAt: message.createdAt,
-                  is_read: false,
                 },
               }
             : user,

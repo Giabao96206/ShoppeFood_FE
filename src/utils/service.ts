@@ -100,3 +100,24 @@ export const GetAllUser = () => {
   const url = "/getAllUser";
   return axios.post<IBackendRes<IUser[]>>(url);
 };
+
+export const GetAllMessages = (conversationId: string) => {
+  const url = "/getAllMessage";
+  return axios.post<IBackendRes<IMessgages[]>>(url, { conversationId });
+};
+
+export const GetMoreMessages = (conversationId: string, cursor?: string) => {
+  const url = `/getMoreMessage/${conversationId}`;
+
+  return axios.get<IBackendRes<IMessgages[]>>(url, {
+    params: {
+      cursor: cursor ? new Date(cursor).toISOString() : undefined,
+      limit: 20,
+    },
+  });
+};
+
+export const GetAI = (questions: any) => {
+  const url = "/getAI";
+  return axios.post(url, { questions });
+};
