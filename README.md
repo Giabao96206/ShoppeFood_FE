@@ -9,3 +9,12 @@ Install Modules: npm expo i
 ## Run
 
 npm run dev
+
+Nếu build npx expo run:android lỗi nhiều quá thì ( lỗi bên Expo )
+B1: Gỡ Androi
+B2: Cài lại npx expo prebuild --clean
+B3: cd androi
+B4: .\gradlew assembleDebug
+B5: Vào android/app/build/outputs/apk/debug/ lấy .apk
+B6: Paste : adb install android/app/build/outputs/apk/debug/app-debug.apk (Nhớ cắm cáp)
+B7: npx expo start

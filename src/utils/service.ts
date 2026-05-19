@@ -121,3 +121,9 @@ export const GetAI = (questions: any) => {
   const url = "/getAI";
   return axios.post(url, { questions });
 };
+
+
+export const PushToken = (token: string)=> {
+  const url = "/api/users/push-token";
+  return axios.post(url, { token });
+};

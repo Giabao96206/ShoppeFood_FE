@@ -28,6 +28,8 @@ export default function Message() {
       const res = await GetAllUser();
       if (res.status === "200") {
         setLastMessgae(res.data || []);
+        console.log(res.data);
+
         const socket = getSocket();
         if (socket) {
           socket.emit("request_online_users");
@@ -208,6 +210,7 @@ export default function Message() {
               name: item.otherUser.name,
               avatar: item.otherUser.avatar,
               conversationId: item._id,
+              backgroundImage: item.backgroundImage,
             },
           });
         }}

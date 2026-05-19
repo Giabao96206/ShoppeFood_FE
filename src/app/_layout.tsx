@@ -7,8 +7,10 @@ import { RootSiblingParent } from "react-native-root-siblings";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { Image } from "expo-image";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import AppProvider, { useCurrentApp } from "../context/app.context";
 import AlerSocket from "./socket.aler";
+import { usePushNotification } from "./usePushNotification";
 
 export const unstable_settings = {
   anchor: "(tabs)",
@@ -41,17 +43,17 @@ export function ErrorBoundary({ error, retry }: ErrorBoundaryProps) {
 
 function RootLayoutNav() {
   const { userSend, appState, lastMessgae } = useCurrentApp();
+  usePushNotification(appState?.user._id || null);
 
   // 👇 FIX 3: Tìm user realtime từ trong lastMessgae để luôn có trạng thái mới nhất
-  const realTimeUser = (lastMessgae || []).find(
-    (item) => item?.otherUser?._id === userSend?._id
-  )?.otherUser || userSend;
+  const realTimeUser =
+    (lastMessgae || []).find((item) => item?.otherUser?._id === userSend?._id)
+      ?.otherUser || userSend;
 
   const isOtherUserOnline = realTimeUser?.is_online;
 
-  // 👇 FIX 1: Tối ưu lại hàm tính thời gian và thêm check null
   const getLastSeenText = (date: Date | string) => {
-    if (!date) return ""; // Tránh lỗi Invalid Date
+    if (!date) return "";
     const lastSeen = new Date(date);
     const now = new Date();
 
@@ -69,27 +71,60 @@ function RootLayoutNav() {
   return (
     <>
       <Stack>
-        {/* ... Các Stack.Screen khác giữ nguyên ... */}
-        
         <Stack.Screen name="index" options={{ headerShown: false }} />
         <Stack.Screen name="(auth)/SignUp" options={{ headerShown: false }} />
         <Stack.Screen name="(auth)/login" options={{ headerShown: false }} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="(auth)/verify" options={{ headerShown: false }} />
         <Stack.Screen name="(auth)/welcome" options={{ headerShown: false }} />
-        <Stack.Screen name="(user)/product/index" options={{ headerShown: false }} />
-        <Stack.Screen name="(user)/product/[id]" options={{ headerShown: false }} />
-        <Stack.Screen name="(user)/product/create.modal" options={{ headerShown: false, presentation: "transparentModal", animation: "fade", animationDuration: 200 }} />
-        <Stack.Screen name="(user)/product/update.modal" options={{ headerShown: false, presentation: "transparentModal", animation: "fade", animationDuration: 200 }} />
-        <Stack.Screen name="(user)/product/orderLast" options={{ title: "Xác nhận đơn hàng", presentation: "transparentModal", animation: "fade", animationDuration: 200 }} />
-        <Stack.Screen name="(user)/account/info" options={{ title: "Thông tin tài khoản" }} />
+        <Stack.Screen
+          name="(user)/product/index"
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="(user)/product/[id]"
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="(user)/product/create.modal"
+          options={{
+            headerShown: false,
+            presentation: "transparentModal",
+            animation: "fade",
+            animationDuration: 200,
+          }}
+        />
+        <Stack.Screen
+          name="(user)/product/update.modal"
+          options={{
+            headerShown: false,
+            presentation: "transparentModal",
+            animation: "fade",
+            animationDuration: 200,
+          }}
+        />
+        <Stack.Screen
+          name="(user)/product/orderLast"
+          options={{
+            title: "Xác nhận đơn hàng",
+            presentation: "transparentModal",
+            animation: "fade",
+            animationDuration: 200,
+          }}
+        />
+        <Stack.Screen
+          name="(user)/account/info"
+          options={{ title: "Thông tin tài khoản" }}
+        />
 
         {/* Cập nhật Stack của phòng Chat */}
         <Stack.Screen
           name="(user)/message/SendMessage"
           options={{
             headerTitle: () => (
-              <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+              <View
+                style={{ flexDirection: "row", alignItems: "center", gap: 10 }}
+              >
                 {/* Avatar */}
                 <View
                   style={{
@@ -109,7 +144,13 @@ function RootLayoutNav() {
                       resizeMode="cover"
                     />
                   ) : (
-                    <Text style={{ fontSize: 16, fontWeight: "bold", color: "#555" }}>
+                    <Text
+                      style={{
+                        fontSize: 16,
+                        fontWeight: "bold",
+                        color: "#555",
+                      }}
+                    >
                       {realTimeUser?.name?.charAt(0)?.toUpperCase() || "U"}
                     </Text>
                   )}
@@ -133,7 +174,9 @@ function RootLayoutNav() {
 
                 {/* Name + status */}
                 <View>
-                  <Text style={{ fontSize: 16, fontWeight: "600", color: "#111" }}>
+                  <Text
+                    style={{ fontSize: 16, fontWeight: "600", color: "#111" }}
+                  >
                     {realTimeUser?.name}
                   </Text>
 
@@ -141,8 +184,8 @@ function RootLayoutNav() {
                   <Text
                     style={{
                       fontSize: 12,
-                      color: isOtherUserOnline ? "#31A24C" : "#65676B", 
-                      fontWeight: isOtherUserOnline ? "500" : "normal"
+                      color: isOtherUserOnline ? "#31A24C" : "#65676B",
+                      fontWeight: isOtherUserOnline ? "500" : "normal",
                     }}
                   >
                     {isOtherUserOnline
@@ -172,13 +215,15 @@ export default function RootLayout() {
   };
 
   return (
-    <RootSiblingParent>
-      <ThemeProvider value={navTheme}>
-        <AppProvider>
-          <AlerSocket />
-          <RootLayoutNav />
-        </AppProvider>
-      </ThemeProvider>
-    </RootSiblingParent>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <RootSiblingParent>
+        <ThemeProvider value={navTheme}>
+          <AppProvider>
+            <AlerSocket />
+            <RootLayoutNav />
+          </AppProvider>
+        </ThemeProvider>
+      </RootSiblingParent>
+    </GestureHandlerRootView>
   );
 }

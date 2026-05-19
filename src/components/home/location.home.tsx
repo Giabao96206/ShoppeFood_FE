@@ -8,28 +8,47 @@ import {
   Text,
   View,
 } from "react-native";
-import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
+import { Image } from "expo-image";
 
 import bg from "@/src/assets/images/mapp.jpg";
 import { useCurrentApp } from "@/src/context/app.context";
-import { Image } from "expo-image";
+
 const { width, height } = Dimensions.get("window");
+
 interface Props {
   onFinish: (address: string) => void;
 }
 
 export default function ShopeeFoodLoading({ onFinish }: Props) {
   const imageScale = useRef(new Animated.Value(0.5)).current;
-  const [location, setLocation] =
-    useState<Location.LocationObjectCoords | null>(null);
+  const [loading, setLoading] = useState(true);
   const { address, setAddress, setHasLocation } = useCurrentApp();
 
   const fadeAnim = useRef(new Animated.Value(1)).current;
   const scaleAnim = useRef(new Animated.Value(1)).current;
 
+  // Hiệu ứng vòng tròn radar quét sóng xung quanh
+  const radarAnim = useRef(new Animated.Value(1)).current;
+
   useEffect(() => {
+    // Chạy hiệu ứng radar lặp đi lặp lại
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(radarAnim, {
+          toValue: 1.3,
+          duration: 1200,
+          useNativeDriver: true,
+        }),
+        Animated.timing(radarAnim, {
+          toValue: 1,
+          duration: 0,
+          useNativeDriver: true,
+        }),
+      ]),
+    ).start();
+
     (async () => {
-      let finalAddress = "Không thể xác định địa chỉ"; // Biến tạm để lưu địa chỉ
+      let finalAddress = "Không thể xác định địa chỉ";
       try {
         let { status } = await Location.requestForegroundPermissionsAsync();
         if (status !== "granted") {
@@ -45,8 +64,8 @@ export default function ShopeeFoodLoading({ onFinish }: Props) {
           tension: 80,
           useNativeDriver: true,
         }).start();
+
         let currentLocation = await Location.getCurrentPositionAsync({});
-        setLocation(currentLocation.coords);
         setAddress("Đang phân tích địa chỉ...");
 
         let geocode = await Location.reverseGeocodeAsync({
@@ -71,7 +90,8 @@ export default function ShopeeFoodLoading({ onFinish }: Props) {
           setAddress(`📍 ${finalAddress}`);
         }
 
-        setHasLocation(true); // 🔥 đánh dấu đã lấy
+        setHasLocation(true);
+        setLoading(false);
 
         setTimeout(() => {
           startExitAnimation(finalAddress);
@@ -109,35 +129,47 @@ export default function ShopeeFoodLoading({ onFinish }: Props) {
         { opacity: fadeAnim, transform: [{ scale: scaleAnim }] },
       ]}
     >
-      {location ? (
-        <MapView
-          style={styles.map}
-          provider={PROVIDER_GOOGLE}
-          initialRegion={{
-            latitude: location.latitude,
-            longitude: location.longitude,
-            latitudeDelta: 0.005,
-            longitudeDelta: 0.005,
-          }}
-          scrollEnabled={false}
-          zoomEnabled={false}
-        >
-          <Marker coordinate={location} />
-        </MapView>
-      ) : (
-        <View style={styles.loadingBox}>
-          <ActivityIndicator size="large" color="#ee4d2d" />
-        </View>
-      )}
-      <View style={styles.addressBar}>
+      {/* GIẢI PHÁP THAY THẾ: Dùng ảnh mờ làm nền thay cho MapView thật */}
+      <Image source={bg} style={styles.mapBackground} blurRadius={2} />
+      <View style={styles.darkOverlay} />
+
+      <View style={styles.centerContainer}>
+        {/* Vòng tròn Radar phát sóng hiệu ứng */}
+        <Animated.View
+          style={[
+            styles.radarGlow,
+            {
+              transform: [{ scale: radarAnim }],
+              opacity: radarAnim.interpolate({
+                inputRange: [1, 1.3],
+                outputRange: [0.6, 0],
+              }),
+            },
+          ]}
+        />
+
+        {/* Khối tròn hiển thị Avatar/Logo Map ở giữa */}
         <View style={styles.imageWrapper}>
           <Animated.View style={{ transform: [{ scale: imageScale }] }}>
             <Image source={bg} style={styles.image} contentFit="cover" />
           </Animated.View>
-          <Text style={styles.addressText} numberOfLines={2}>
-            {address}
-          </Text>
         </View>
+
+        {/* Trạng thái Loading Loading */}
+        {loading && (
+          <ActivityIndicator
+            size="small"
+            color="#ee4d2d"
+            style={{ marginTop: 15 }}
+          />
+        )}
+      </View>
+
+      {/* Thanh hiển thị địa chỉ chữ */}
+      <View style={styles.addressBar}>
+        <Text style={styles.addressText} numberOfLines={2}>
+          {address}
+        </Text>
       </View>
     </Animated.View>
   );
@@ -155,44 +187,68 @@ const styles = StyleSheet.create({
     zIndex: 9999,
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: "#f5f5f5",
   },
-  map: {
+  mapBackground: {
+    position: "absolute",
     width: width,
     height: height,
+    opacity: 0.4, // Làm mờ nhẹ hình nền
   },
-  loadingBox: {
-    flex: 1,
+  darkOverlay: {
+    position: "absolute",
+    width: width,
+    height: height,
+    backgroundColor: "rgba(255, 255, 255, 0.5)",
+  },
+  centerContainer: {
     justifyContent: "center",
     alignItems: "center",
+    marginBottom: 50,
   },
-  addressBar: {
+  radarGlow: {
     position: "absolute",
-    top: "30%",
-    width: "100%",
-    padding: 15,
-    borderRadius: 10,
-    shadowColor: "#000",
-    alignItems: "center",
+    width: 220,
+    height: 220,
+    borderRadius: 110,
+    backgroundColor: "#ee4d2d",
   },
   imageWrapper: {
     justifyContent: "center",
     alignItems: "center",
-    width: "100%",
-  },
-
-  image: {
-    width: 180,
-    height: 180,
+    backgroundColor: "#fff",
     borderRadius: 100,
+    padding: 6,
+    elevation: 5,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
   },
-
-  addressText: {
+  image: {
+    width: 160,
+    height: 160,
+    borderRadius: 80,
+  },
+  addressBar: {
     position: "absolute",
-    color: "black",
+    bottom: "15%", // Đưa chữ xuống dưới cho thoáng giao diện
+    width: "90%",
+    backgroundColor: "rgba(255, 255, 255, 0.95)",
+    paddingVertical: 15,
+    paddingHorizontal: 20,
+    borderRadius: 25,
+    elevation: 3,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.2,
+    shadowRadius: 1.41,
+  },
+  addressText: {
+    color: "#222",
     fontWeight: "600",
     textAlign: "center",
-    fontSize: 20,
-    width: "100%",
-    paddingHorizontal: 10,
+    fontSize: 16,
+    lineHeight: 22,
   },
 });
