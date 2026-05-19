@@ -63,6 +63,9 @@ export default function ChatScreen() {
   );
 
   const handleSelectWallpaper = async () => {
+    const socket = getSocket();
+    if (!socket) return;
+
     const permissionResult =
       await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (permissionResult.granted === false) {
@@ -92,20 +95,23 @@ export default function ChatScreen() {
             type: "image/jpeg",
           } as any);
           const isSuccess = await EditMM(formData);
-          console.log(isSuccess);
-
           if (isSuccess.status === "200") {
-            setChatWallpaper(selectedUri);
+            setChatWallpaper(isSuccess.data);
             setLastMessgae((prev: any[]) =>
               prev.map((item) =>
                 item._id === conversationId
                   ? {
                       ...item,
-                      backgroundImage: selectedUri,
+                      backgroundImage: isSuccess.data,
                     }
                   : item,
               ),
             );
+            socket.emit("update_chat_wallpaper", {
+              receiverId: id,
+              conversationId: conversationId,
+              backgroundImage: isSuccess.data,
+            });
           }
         }
       } catch (error) {
@@ -321,6 +327,38 @@ export default function ChatScreen() {
       socket.off("message_seen", handleSeen);
     };
   }, []);
+
+  //
+  useEffect(() => {
+    const socket = getSocket();
+    if (!socket) return;
+
+    socket.on(
+      "receive_chat_wallpaper",
+      (data: {
+        receiverId: string;
+        backgroundImage: string;
+        conversationId: string;
+      }) => {
+        console.log(data);
+        setChatWallpaper(data.backgroundImage);
+
+        setLastMessgae((prev: IUser[]) =>
+          prev.map((item) =>
+            item._id === data.conversationId
+              ? { ...item, backgroundImage: data.backgroundImage }
+              : item,
+          ),
+        );
+      },
+    );
+
+    // Clean up socket khi rời màn hình để tránh bị nhân đôi sự kiện (lỗi memory leak)
+    return () => {
+      socket.off("receive_chat_wallpaper");
+    };
+  }, [conversationId]);
+
   // ===================== SEND =====================
   const handleSend = () => {
     const socket = getSocket();

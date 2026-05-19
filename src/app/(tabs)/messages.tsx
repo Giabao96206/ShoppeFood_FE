@@ -17,29 +17,26 @@ export default function Message() {
   const { setUserSend, setLastMessgae, lastMessgae, appState } =
     useCurrentApp();
 
-  // 1. LẤY ID CỦA CHÍNH USER ĐANG ĐĂNG NHẬP
   const currentUserId = appState?.user?._id;
   const appStateRef = useRef(AppState.currentState);
 
-  // XÓA: Không cần [online, setOnline] và [onlineUsers, setOnlineUsers] nữa
+  const fetchDT = async () => {
+    const res = await GetAllUser();
+    if (res.status === "200") {
+      setLastMessgae(res.data || []);
+      console.log("🔄 Đã cập nhật lại danh sách đoạn chat mới nhất từ API");
+
+      const socket = getSocket();
+      if (socket) {
+        socket.emit("request_online_users");
+      }
+    }
+  };
 
   useEffect(() => {
-    const fetchDT = async () => {
-      const res = await GetAllUser();
-      if (res.status === "200") {
-        setLastMessgae(res.data || []);
-        console.log(res.data);
-
-        const socket = getSocket();
-        if (socket) {
-          socket.emit("request_online_users");
-        }
-      }
-    };
     fetchDT();
   }, []);
 
-  // UseEffect xử lý Socket tin nhắn
   useEffect(() => {
     const socket = getSocket();
     if (!socket) return;
@@ -91,13 +88,12 @@ export default function Message() {
     };
   }, []);
 
-  // UseEffect xử lý Trạng thái Online/Offline
+  // UseEffect xử lý Trạng thái Online/Offline & Vòng đời của App (AppState)
   useEffect(() => {
     const socket = getSocket();
     if (!socket) return;
 
     const handleGetOnlineUsers = (usersArray: any) => {
-      // CHỈ CẦN cập nhật thẳng vào Context
       setLastMessgae((prev: IUser[]) =>
         (prev || []).map((item) => {
           const isUserOnline = usersArray.includes(
@@ -146,18 +142,23 @@ export default function Message() {
     socket.on("get_online_users", handleGetOnlineUsers);
     socket.on("user_online", handleUserOnline);
     socket.on("user_offline", handleUserOffline);
-    // Xử lý khi App bị ẩn xuống nền (Background) hoặc mở lại (Active)
-    const subscription = AppState.addEventListener("change", (nextAppState) => {
-      if (
-        appStateRef.current.match(/inactive|background/) &&
-        nextAppState === "active"
-      ) {
-        if (!socket.connected) socket.connect();
-      } else if (nextAppState === "background") {
-        socket.disconnect();
-      }
-      appStateRef.current = nextAppState;
-    });
+
+    const subscription = AppState.addEventListener(
+      "change",
+      async (nextAppState) => {
+        if (
+          appStateRef.current.match(/inactive|background/) &&
+          nextAppState === "active"
+        ) {
+          if (!socket.connected) socket.connect();
+
+          await fetchDT();
+        } else if (nextAppState === "background") {
+          socket.disconnect();
+        }
+        appStateRef.current = nextAppState;
+      },
+    );
 
     return () => {
       socket.off("get_online_users", handleGetOnlineUsers);
@@ -171,8 +172,6 @@ export default function Message() {
     const lastMsg = item.lastMessage?.content || "Bắt đầu cuộc trò chuyện";
     const isRead = item.lastMessage?.is_read ?? true;
     const createdAt = item.lastMessage?.createdAt;
-
-    // 👇 CHỈNH SỬA Ở ĐÂY: Lấy isOnline trực tiếp từ Context (otherUser)
     const isOnline = item.otherUser?.is_online;
 
     const shouldShowUnread =
@@ -284,7 +283,6 @@ export default function Message() {
         keyExtractor={(item) => item._id}
         renderItem={renderItem}
         contentContainerStyle={{ paddingBottom: 20 }}
-        // 👇 CHỈNH SỬA Ở ĐÂY: Vì đã xóa onlineUsers nên extraData chỉ cần lastMessgae
         extraData={lastMessgae}
       />
     </View>
