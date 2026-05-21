@@ -40,6 +40,7 @@ export default function ChatScreen() {
   const [loadingMore, setLoadingMore] = useState(false);
 
   const { appState, setLastMessgae, lastMessgae } = useCurrentApp();
+  console.log(lastMessgae);
 
   const { id, name, avatar, conversationId } = useLocalSearchParams();
 

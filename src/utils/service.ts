@@ -121,3 +121,8 @@ export const GetAI = (questions: any) => {
   const url = "/getAI";
   return axios.post(url, { questions });
 };
+
+export const getFoodAI = (preference: string) => {
+  const url = "/getFoodAI";
+  return axios.post(url, { preference });
+};
