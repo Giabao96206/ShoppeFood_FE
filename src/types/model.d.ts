@@ -142,6 +142,7 @@ declare global {
     _id: string;
     otherUser: IOtherUser;
     lastMessage: ILastMessage;
+    backgroundImage: string | null;
   }
 
   interface IMessgages {
@@ -151,5 +152,6 @@ declare global {
     content: string;
     status: "sent" | "read";
     createdAt: string;
+    reply_to: string | null;
   }
 }

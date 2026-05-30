@@ -7,8 +7,11 @@ import { RootSiblingParent } from "react-native-root-siblings";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { Image } from "expo-image";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import ChatBoxAI from "../components/AI/ChatBoxAI";
 import AppProvider, { useCurrentApp } from "../context/app.context";
 import AlerSocket from "./socket.aler";
+import { usePushNotification } from "./usePushNotification";
 
 export const unstable_settings = {
   anchor: "(tabs)",
@@ -41,6 +44,7 @@ export function ErrorBoundary({ error, retry }: ErrorBoundaryProps) {
 
 function RootLayoutNav() {
   const { userSend, appState, lastMessgae } = useCurrentApp();
+  usePushNotification(appState?.user._id || null);
 
   const realTimeUser =
     (lastMessgae || []).find((item) => item?.otherUser?._id === userSend?._id)
@@ -49,7 +53,7 @@ function RootLayoutNav() {
   const isOtherUserOnline = realTimeUser?.is_online;
 
   const getLastSeenText = (date: Date | string) => {
-    if (!date) return ""; // Tránh lỗi Invalid Date
+    if (!date) return "";
     const lastSeen = new Date(date);
     const now = new Date();
 
@@ -210,13 +214,16 @@ export default function RootLayout() {
   };
 
   return (
-    <RootSiblingParent>
-      <ThemeProvider value={navTheme}>
-        <AppProvider>
-          <AlerSocket />
-          <RootLayoutNav />
-        </AppProvider>
-      </ThemeProvider>
-    </RootSiblingParent>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <RootSiblingParent>
+        <ThemeProvider value={navTheme}>
+          <AppProvider>
+            <ChatBoxAI />
+            <AlerSocket />
+            <RootLayoutNav />
+          </AppProvider>
+        </ThemeProvider>
+      </RootSiblingParent>
+    </GestureHandlerRootView>
   );
 }

@@ -26,13 +26,16 @@ export default function UserInfo() {
 
   const EditAccount = async (formData: any) => {
     try {
-      const response = await fetch("http://192.168.0.43:5000/editUser", {
-        method: "POST", // Hoặc PUT, nhớ kiểm tra lại cho khớp BE
-        headers: {
-          Authorization: `Bearer ${appState?.access_token}`,
+      const response = await fetch(
+        `${process.env.EXPO_PUBLIC_API_URL}/editUser`,
+        {
+          method: "POST", // Hoặc PUT, nhớ kiểm tra lại cho khớp BE
+          headers: {
+            Authorization: `Bearer ${appState?.access_token}`,
+          },
+          body: formData,
         },
-        body: formData,
-      });
+      );
 
       // 1. CHẶN LẠI Ở ĐÂY: Đọc response dưới dạng text thô trước
       const textData = await response.text();

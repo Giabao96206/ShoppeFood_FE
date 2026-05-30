@@ -5,7 +5,7 @@ let socket: Socket | null = null;
 export const connectSocket = (token: string) => {
   if (socket?.connected) return socket;
 
-  socket = io("http://192.168.0.43:5000", {
+  socket = io(`${process.env.EXPO_PUBLIC_API_URL}`, {
     auth: {
       access_token: token,
     },
